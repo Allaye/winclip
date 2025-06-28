@@ -3,7 +3,7 @@
 import subprocess
 import threading
 import time
-import winclip.engine.storage as storage
+import engine.storage as storage
 
 class ClipboardMonitor:
     def __init__(self, on_clipboard_change, poll_interval=1.0):
@@ -17,7 +17,7 @@ class ClipboardMonitor:
         self._last_clipboard = None
         self._db_initialized = False
         if not self._db_initialized:
-            storage.init_db()
+            storage.init_db() # Ensure the database is initialized and possibly return the current clips if any
             self._db_initialized = True
 
     def _read_clipboard(self):

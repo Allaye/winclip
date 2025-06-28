@@ -1,192 +1,223 @@
-<div id="top"></div>
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Don't forget to give the project a star!
-*** Thanks again! Now go create something AMAZING! :D
--->
+# WinClip
 
+<div align="center">
+  <h3 align="center">WinClip - Smart Clipboard Manager</h3>
+  <p align="center">
+    A lightweight, cross-platform clipboard manager inspired by windows clipboard manager
+    <br />
+    <a href="#usage"><strong>View Usage Examples »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/Allaye/winclip/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/Allaye/winclip/issues">Request Feature</a>
+  </p>
+</div>
 
-
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
 
 
 
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
+## Table of Contents
 
-  <h3 align="center">Best-README-Template</h3>
-
-  <p align="center">
-    An awesome README template to jumpstart your projects!
-    <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
-    ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Request Feature</a>
-  </p>
-</div>
+- [About The Project](#about-the-project)
+  - [Features](#features)
+  - [Built With](#built-with)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Usage](#usage)
+- [API Reference](#api-reference)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
 
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
-
-
-
-<!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+WinClip is a lightweight, cross-platform clipboard manager designed to enhance your productivity by keeping track of your clipboard history. Built with Python, it provides a simple yet powerful way to manage and access your copied content.
 
-There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
+### Why WinClip?
 
-Here's why:
-* Your time should be focused on creating something amazing. A project that solves a problem and helps others
-* You shouldn't be doing the same tasks over and over like creating a README from scratch
-* You should implement DRY principles to the rest of your life :smile:
+- **Never lose copied content again** - Automatically saves every item you copy to the clipboard
+- **Lightweight and fast** - Minimal resource usage with efficient SQLite storage
+- **Cross-platform** - Works on Windows, Linux, and macOS
+- **Pin important clips** - Mark frequently used content for easy access
+- **Smart history** - Timestamp tracking and source application detection
+- **Extensible** - Built with a modular architecture for easy feature additions
 
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
+### Features
 
-Use the `BLANK_README.md` to get started.
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
+- ✅ Real-time clipboard monitoring
+- ✅ SQLite database storage for persistence
+- ✅ Pin/unpin functionality for important clips
+- ✅ Timestamp tracking for all clipboard entries
+- ✅ Source application detection
+- ✅ Simple command-line interface
+- 🚧 GUI interface (coming soon)
+- 🚧 Search and filter capabilities
+- 🚧 Export/import functionality
 
 ### Built With
 
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
-
-* [Next.js](https://nextjs.org/)
-* [React.js](https://reactjs.org/)
-* [Vue.js](https://vuejs.org/)
-* [Angular](https://angular.io/)
-* [Svelte](https://svelte.dev/)
-* [Laravel](https://laravel.com)
-* [Bootstrap](https://getbootstrap.com)
-* [JQuery](https://jquery.com)
-
-<p align="right">(<a href="#top">back to top</a>)</p>
+- [Python 3.12+](https://python.org/) - Core language
+- [SQLite](https://sqlite.org/) - Database storage
+- [UV](https://github.com/astral-sh/uv) - Package management
 
 
 
-<!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+To get WinClip up and running on your local machine, follow these simple steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+- Python 3.12 or higher
+- [UV package manager](https://github.com/astral-sh/uv) (recommended) or pip
+
+Install UV (if you don't have it):
+
+```sh
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
 
 ### Installation
 
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
+1. Clone the repository:
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
    ```sh
-   git clone https://github.com/your_username_/Project-Name.git
+   git clone https://github.com/Allaye/winclip.git
+   cd winclip
    ```
-3. Install NPM packages
+
+2. Install dependencies using UV:
+
    ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
+   uv sync
    ```
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+   Or using pip:
+
+   ```sh
+   pip install -e .
+   ```
+
+3. Run the application:
+
+   ```sh
+   python main.py
+   ```
+
+The clipboard monitor will start automatically and begin tracking your clipboard activity.
 
 
 
-<!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+### Basic Usage
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+1. **Start the clipboard monitor:**
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+   ```sh
+   python main.py
+   ```
+
+2. **Copy any text to your clipboard** - WinClip will automatically detect and store it.
+
+3. **View recent clips** - The application will display your recent clipboard entries in the terminal.
+
+### Example Output
+
+```
+[+] New clipboard text:
+Hello, this is a test clip!
+
+2025-06-28 08:45:23 - Hello, this is a test clip!... (pinned=False)
+2025-06-28 08:44:15 - Previous clipboard content... (pinned=False)
+```
+
+### Programmatic Usage
+
+You can also use WinClip's components in your own Python projects:
+
+```python
+from winclip.engine.storage import get_recent_clips, init_db
+from winclip.engine.model import Clip
+
+# Initialize the database
+init_db()
+
+# Get recent clips
+clips = get_recent_clips(limit=10)
+for clip in clips:
+    print(f"{clip.timestamp}: {clip.content[:50]}...")
+
+# Create and store a new clip
+new_clip = Clip(content="My custom clip content")
+from winclip.engine.storage import insert_clip
+insert_clip(new_clip)
+```
+
+## API Reference
+
+### Core Classes
+
+#### `Clip`
+
+Represents a clipboard entry with the following attributes:
+
+- `id` (str): Unique identifier
+- `content` (str): The clipboard content
+- `timestamp` (datetime): When the clip was created
+- `pinned` (bool): Whether the clip is pinned
+- `source_app` (str, optional): Source application
+- `type` (str): Content type (default: "text")
+- `tags` (list, optional): Associated tags
+
+### Storage Functions
+
+- `init_db()` - Initialize the SQLite database
+- `insert_clip(clip: Clip)` - Store a new clip
+- `get_recent_clips(limit=50)` - Retrieve recent clips
+- `pin_unpin_clip(clip: Clip)` - Toggle pin status
+- `delete_clip(clip_id: str)` - Delete a specific clip
+- `clear_clips()` - Clear all clips from database
 
 
 
-<!-- ROADMAP -->
 ## Roadmap
 
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Add Additional Templates w/ Examples
-- [ ] Add "components" document to easily copy & paste sections of the readme
-- [ ] Multi-language Support
-    - [ ] Chinese
-    - [ ] Spanish
+- [x] Core clipboard monitoring functionality
+- [x] SQLite database storage
+- [x] Pin/unpin clips feature
+- [x] Basic CLI interface
+- [ ] GUI application with system tray integration
+- [ ] Search and filter functionality
+- [ ] Export/import clipboard history
+- [ ] Keyboard shortcuts for quick access
+- [ ] Support for image and file clips
+- [ ] Cloud synchronization
+- [ ] Plugin system for extensibility
+- [ ] Multi-language support
+  - [ ] French
+  - [ ] Spanish
+  - [ ] German
 
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
-
-<p align="right">(<a href="#top">back to top</a>)</p>
+See the [open issues](https://github.com/Allaye/winclip/issues) for a full list of proposed features and known issues.
 
 
 
-<!-- CONTRIBUTING -->
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -194,60 +225,37 @@ Don't forget to give the project a star! Thanks again!
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- LICENSE -->
 ## License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- CONTACT -->
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
+Allaye - [@Allaye](https://github.com/Allaye)
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
-
-<p align="right">(<a href="#top">back to top</a>)</p>
+Project Link: [https://github.com/Allaye/winclip](https://github.com/Allaye/winclip)
 
 
 
-<!-- ACKNOWLEDGMENTS -->
+---
+
 ## Acknowledgments
 
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
+Special thanks to the following resources and communities:
 
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Malven's Flexbox Cheatsheet](https://flexbox.malven.co/)
-* [Malven's Grid Cheatsheet](https://grid.malven.co/)
-* [Img Shields](https://shields.io)
-* [GitHub Pages](https://pages.github.com)
-* [Font Awesome](https://fontawesome.com)
-* [React Icons](https://react-icons.github.io/react-icons/search)
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
+- [Python Community](https://python.org/) for the excellent language and ecosystem
+- [SQLite](https://sqlite.org/) for the lightweight database solution
+- [UV](https://github.com/astral-sh/uv) for modern Python package management
+- [GitHub](https://github.com) for hosting and collaboration tools
 
 <!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
-[contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
-[forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
-[stars-url]: https://github.com/othneildrew/Best-README-Template/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
-[issues-url]: https://github.com/othneildrew/Best-README-Template/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
-[product-screenshot]: images/screenshot.png
+[contributors-shield]: https://img.shields.io/github/contributors/Allaye/winclip.svg?style=for-the-badge
+[contributors-url]: https://github.com/Allaye/winclip/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/Allaye/winclip.svg?style=for-the-badge
+[forks-url]: https://github.com/Allaye/winclip/network/members
+[stars-shield]: https://img.shields.io/github/stars/Allaye/winclip.svg?style=for-the-badge
+[stars-url]: https://github.com/Allaye/winclip/stargazers
+[issues-shield]: https://img.shields.io/github/issues/Allaye/winclip.svg?style=for-the-badge
+[issues-url]: https://github.com/Allaye/winclip/issues
+[license-shield]: https://img.shields.io/github/license/Allaye/winclip.svg?style=for-the-badge
+[license-url]: https://github.com/Allaye/winclip/blob/master/LICENSE.txt

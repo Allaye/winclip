@@ -1,7 +1,7 @@
 import sqlite3
 import json
 from datetime import datetime
-from winclip.engine.model import Clip
+from engine.model import Clip
 
 DB_PATH = "clipboard_history.db"
 

@@ -1,0 +1,32 @@
+.clip-card {
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+
+.header-bar {
+    padding: 6px;
+    border-bottom: 1px solid #444;
+}
+
+.header-title {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.clear-button {
+    background-color: transparent;
+    color: #ccc;
+    border: none;
+}
+
+
+.clip-card {
+    padding: 12px;
+    min-height: 72px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    background-color: #1e1e1e;
+    margin-bottom: 6px;
+}
