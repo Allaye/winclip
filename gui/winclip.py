@@ -31,6 +31,9 @@ class ClipboardWindow(Gtk.ApplicationWindow):
         outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
         # outer.set_margin_top(12)
         # outer.set_margin_bottom(12)
+        # Main horizontal layout
+        # self.append(self.label)
+        # self.append(button_box)
 
         # Header with clear callback
         header = HeaderBar(on_clear_all=self.clear_all_clips)

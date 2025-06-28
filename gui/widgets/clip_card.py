@@ -26,24 +26,42 @@ class ClipCard(Gtk.Box):
             max_width_chars=50
         )
         self.label.set_hexpand(True)
-
+        self.is_pinned = False
         # --- Pin button (icon only)
         self.pin_button = Gtk.Button()
-        icon_name = "emblem-favorite-symbolic" if pinned else "emblem-symbolic"
+        if pinned:
+            icon_name = "object-locked-symbolic" # Or "locked-symbolic", "security-high-symbolic"
+            tooltip_text = "Pinned. Click to unpin."
+        else:
+            icon_name = "object-unlocked-symbolic" # Or "unlocked-symbolic", "security-medium-symbolic"
+            tooltip_text = "Not pinned. Click to pin."
         self.pin_button.set_icon_name(icon_name)
+        self.pin_button.set_tooltip_text(tooltip_text)
+        # icon_name = "pin-symbolic" if pinned else "pin-alt-symbolic"
+        # self.pin_button.set_icon_name(icon_name)
         self.pin_button.set_valign(Gtk.Align.CENTER)
-        self.pin_button.set_tooltip_text("Pin this clip")
+        # self.pin_button.set_tooltip_text("Pin this clip")
 
         # --- Menu button (3 dots)
         self.menu_button = Gtk.MenuButton(icon_name="open-menu-symbolic")
         self.menu_button.set_valign(Gtk.Align.CENTER)
 
         # For now: dummy empty menu
-        popover = Gtk.Popover()
-        popover.set_child(Gtk.Label(label="More options..."))
-        self.menu_button.set_popover(popover)
+        # popover = Gtk.Popover()
+        # popover.set_child(Gtk.Label(label="More options..."))
+        # self.menu_button.set_popover(popover)
 
-        # --- Pack widgets
+        # # --- Pack widgets
+        # self.append(self.label)
+        # self.append(self.pin_button)
+        # self.append(self.menu_button)
+
+        # --- Button column (Menu on top, Pin below)
+        button_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+        button_box.set_valign(Gtk.Align.CENTER)
+        button_box.append(self.menu_button)
+        button_box.append(self.pin_button)
+
+        # --- Pack main layout: label on left, button box on right
         self.append(self.label)
-        self.append(self.pin_button)
-        self.append(self.menu_button)
+        self.append(button_box)

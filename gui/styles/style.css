@@ -1,10 +1,91 @@
+/* Existing .clip-card styles */
 .clip-card {
-    background-color: #f5f5f5;
-    border-radius: 10px;
+    background-color: #1e1e1e;
     padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    min-height: 72px;
+    margin-bottom: 6px;
+}
+
+/* New: Override the focus/selected outline */
+.clip-card:focus,
+.clip-card:selected {
+    /* To reduce the "shadow" or outline, you can adjust properties like: */
+    /* 1. box-shadow (if the theme uses it for the outline) */
+    box-shadow: 0 0 0 1px white; /* Smaller, white box-shadow */
+    
+    /* 2. outline (if the theme uses it for the outline) */
+    outline: 1px solid white; /* Smaller, white outline */
+    outline-offset: 0; /* Ensures it's right on the border */
+
+    /* You might need to set one or both depending on your theme */
+    /* If the original is a very thick box-shadow, setting it to a small value will "reduce by 90%" */
+    /* If the original is an outline, setting a smaller outline width will reduce it */
+
+    /* If the above don't work, some themes use border directly for focus/selected state */
+    border: 1px solid white; /* Change border color on focus */
+}
+
+/* Optional: Add hover effect if you wish */
+.clip-card:hover {
+    /* Example: Slightly change border on hover */
+    border: 1px solid #555;
 }
 
 
+/* Your other existing styles */
+.header-bar {
+    padding: 6px;
+    border-bottom: 1px solid #444;
+}
+
+.header-title {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.clear-button {
+    background-color: transparent;
+    color: #d88585;
+    border: none;
+}/* Existing .clip-card styles */
+.clip-card {
+    background-color: #1e1e1e;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    min-height: 72px;
+    margin-bottom: 6px;
+}
+
+/* New: Override the focus/selected outline */
+.clip-card:focus,
+.clip-card:selected {
+    /* To reduce the "shadow" or outline, you can adjust properties like: */
+    /* 1. box-shadow (if the theme uses it for the outline) */
+    box-shadow: 0 0 0 1px white; /* Smaller, white box-shadow */
+    
+    /* 2. outline (if the theme uses it for the outline) */
+    outline: 1px solid white; /* Smaller, white outline */
+    outline-offset: 0; /* Ensures it's right on the border */
+
+    /* You might need to set one or both depending on your theme */
+    /* If the original is a very thick box-shadow, setting it to a small value will "reduce by 90%" */
+    /* If the original is an outline, setting a smaller outline width will reduce it */
+
+    /* If the above don't work, some themes use border directly for focus/selected state */
+    border: 1px solid white; /* Change border color on focus */
+}
+
+/* Optional: Add hover effect if you wish */
+.clip-card:hover {
+    /* Example: Slightly change border on hover */
+    border: 1px solid #555;
+}
+
+
+/* Your other existing styles */
 .header-bar {
     padding: 6px;
     border-bottom: 1px solid #444;
@@ -19,14 +100,4 @@
     background-color: transparent;
     color: #ccc;
     border: none;
-}
-
-
-.clip-card {
-    padding: 12px;
-    min-height: 72px;
-    border-radius: 8px;
-    border: 1px solid #333;
-    background-color: #1e1e1e;
-    margin-bottom: 6px;
 }

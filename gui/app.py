@@ -7,7 +7,7 @@ gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk
 
 def launch_gui():
-    app = Gtk.Application(application_id="com.clipboard.manager1")
+    app = Gtk.Application(application_id="com.clipboard.manager10")
 
     def on_activate(app):
         # Load CSS
@@ -19,6 +19,11 @@ def launch_gui():
 
     app.connect("activate", on_activate)
     app.run(None)
+    try:
+        app.run(None)
+    except Exception as e:
+        print("GTK app failed to run:", e)
 
 if __name__ == "__main__":
     launch_gui()
+    
