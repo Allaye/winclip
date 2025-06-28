@@ -8,7 +8,7 @@ from widgets.header_bar import HeaderBar
 class ClipboardWindow(Gtk.ApplicationWindow):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.set_title("Clipboard")
+        self.set_title("Clipboard and more - WinClip 🪟")
         self.set_default_size(400, 500)
         self.set_margin_top(10)
         self.set_margin_bottom(10)
