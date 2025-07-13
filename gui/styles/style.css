@@ -101,3 +101,11 @@
     color: #ccc;
     border: none;
 }
+
+.pinned-icon {
+    color: #f0c420; /* gold or amber */
+}
+
+.unpinned-icon {
+    color: #888888; /* muted grey */
+}

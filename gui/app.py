@@ -7,7 +7,7 @@ gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk
 
 def launch_gui():
-    app = Gtk.Application(application_id="com.clipboard.manager10111")
+    app = Gtk.Application(application_id="com.clipboard.manager101110")
 
     def on_activate(app):
         # Load CSS

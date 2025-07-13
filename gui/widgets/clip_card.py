@@ -26,7 +26,7 @@ class ClipCard(Gtk.Box):
             max_width_chars=50
         )
         self.label.set_hexpand(True)
-        self.is_pinned = False
+        self.is_pinned = pinned
         # --- Pin button (icon only)
         self.pin_button = Gtk.Button()
         if pinned:
@@ -65,3 +65,22 @@ class ClipCard(Gtk.Box):
         # --- Pack main layout: label on left, button box on right
         self.append(self.label)
         self.append(button_box)
+
+        #  connect action signals
+        self.pin_button.connect("clicked", self.toggle_pin)
+
+
+
+
+
+    def toggle_pin(self, button):
+        self.is_pinned = not self.is_pinned
+
+        icon_name = "object-locked-symbolic" if self.is_pinned else "object-unlocked-symbolic"
+        tooltip = "Pinned. Click to unpin." if self.is_pinned else "Not pinned. Click to pin."
+
+        self.pin_button.set_icon_name(icon_name)
+        self.pin_button.set_tooltip_text(tooltip)
+
+        print(f"[Pin] Toggled: {self.is_pinned}")
+
