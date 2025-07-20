@@ -1,12 +1,13 @@
 # gui/window.py
 import gi
 gi.require_version("Gtk", "4.0")
-from gi.repository import Gtk
+from gi.repository import Gtk # type: ignore  # noqa: E402
 
 # Assuming widgets.clip_card.ClipCard is correctly defined
-from widgets.clip_card import ClipCard
+# from widgets.clip_card import ClipCard  # noqa: E402
+from gui import ClipCard # noqa: E402
 # Assuming widgets.header_bar.HeaderBar is your custom header bar for INSIDE the window
-from widgets.header_bar import HeaderBar 
+from gui import HeaderBar # noqa: E402
 
 class ClipboardWindow(Gtk.ApplicationWindow):
     def __init__(self, **kwargs):
@@ -55,17 +56,41 @@ class ClipboardWindow(Gtk.ApplicationWindow):
 
         # --- Set Window Child and Load Data ---
         self.set_child(outer)
-        self.load_fake_data()
+        # self.load_fake_data()
+        self.refresh_clips()
 
-    def load_fake_data(self):
-        for i in range(5):
-            # Pass False for Item 1 to match the screenshot where Item 1 is unpinned
-            # and Item 2 and 3 are pinned (assuming green lock means pinned, red unpinned)
-            card = ClipCard(content=f"Item {i+1}", pinned=(i == 1 or i == 2)) # Item 2 and Item 3 pinned
-            self.clip_list.append(card)
+    # def load_fake_data(self):
+    #     for i in range(5):
+    #         # Pass False for Item 1 to match the screenshot where Item 1 is unpinned
+    #         # and Item 2 and 3 are pinned (assuming green lock means pinned, red unpinned)
+    #         card = ClipCard(content=f"Item {i+1}", pinned=(i == 1 or i == 2)) # Item 2 and Item 3 pinned
+    #         self.clip_list.append(card)
 
     def clear_all_clips(self):
         print("Clear All clicked!")
         
-        for row in self.clip_list.get_children():
-            self.clip_list.remove(row)
+        # Clear list box - GTK4 way
+        while True:
+            first_child = self.clip_list.get_first_child()
+            if first_child is None:
+                break
+            self.clip_list.remove(first_child)
+        self.refresh_clips()
+
+    def refresh_clips(self):
+        from engine.storage import get_recent_clips
+
+        # Clear current list - GTK4 way
+        while True:
+            first_child = self.clip_list.get_first_child()
+            if first_child is None:
+                break
+            self.clip_list.remove(first_child)
+
+        # Load from DB
+        for clip in get_recent_clips(50):
+            card = ClipCard(content=clip.content, pinned=clip.pinned)
+            self.clip_list.append(card)
+
+
+
