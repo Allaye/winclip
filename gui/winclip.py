@@ -13,18 +13,19 @@ class ClipboardWindow(Gtk.ApplicationWindow):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         
-        # --- Configure the Window's Official Titlebar (Gtk.HeaderBar) ---
-        # Create the standard Gtk.HeaderBar for the window's top title area
+        # Configure window titlebar
         window_header_bar = Gtk.HeaderBar()
-        window_header_bar.set_show_title_buttons(True) # Keep min/max/close buttons
+        window_header_bar.set_show_title_buttons(True)
 
-        # Create the label for the window's title
-        window_title_label = Gtk.Label(label="Clipboard and more - WinClip 🪟")
+        # Create smaller title label aligned to the left
+        window_title_label = Gtk.Label(label="WinClip 🪟")
+        window_title_label.set_css_classes(["title-small"])
+        window_title_label.set_halign(Gtk.Align.START)
         
-        # Pack the label to the start (left) of the window's header bar
+        # Pack the label to the start (left) of the header bar
         window_header_bar.pack_start(window_title_label) 
         
-        # Set this configured Gtk.HeaderBar as the window's title bar
+        # Set the header bar as the window's titlebar
         self.set_titlebar(window_header_bar)
 
         # --- Window Properties ---
@@ -88,8 +89,16 @@ class ClipboardWindow(Gtk.ApplicationWindow):
             self.clip_list.remove(first_child)
 
         # Load from DB
-        for clip in get_recent_clips(50):
-            card = ClipCard(content=clip.content, pinned=clip.pinned)
+        for clip in get_recent_clips(15):
+            # Limit content to exactly 150 characters (including spaces, emojis, etc.)
+            display_content = clip.content
+            if len(display_content) > 250:
+                display_content = display_content[:250] + "..."
+
+            # Replace newlines with spaces for compact display
+            display_content = display_content.replace('\n', ' ').replace('\r', ' ')
+            
+            card = ClipCard(content=display_content, pinned=clip.pinned)
             self.clip_list.append(card)
 
 

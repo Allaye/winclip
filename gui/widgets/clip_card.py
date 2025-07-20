@@ -7,25 +7,31 @@ from gi.repository import Gtk, Gio, Pango
 class ClipCard(Gtk.Box):
     def __init__(self, content: str, pinned=False):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
-        self.set_margin_top(6)
-        self.set_margin_bottom(6)
+        self.set_margin_top(4)
+        self.set_margin_bottom(4)
         self.set_margin_start(12)
         self.set_margin_end(12)
         self.set_hexpand(True)
         self.set_vexpand(False)
         self.set_css_classes(["clip-card"])
-        self.set_size_request(-1, 80)  # -1 means keep default width; 80px height
+        self.set_size_request(-1, -1)  # Allow dynamic height based on content
 
 
         # --- Content label
         self.label = Gtk.Label(
             label=content,
-            xalign=0,
-            wrap=True,
-            wrap_mode=Pango.WrapMode.WORD_CHAR,
-            max_width_chars=50
+            xalign=0,  # Align text to the left
+            yalign=0,  # Align text to the top
+            wrap=True,  # Enable wrapping so text breaks to next line
+            wrap_mode=Pango.WrapMode.WORD_CHAR,  # Wrap at word boundaries or characters
+            ellipsize=Pango.EllipsizeMode.NONE,  # Remove automatic ellipsis
+            max_width_chars=-1,  # Remove character limit to prevent early truncation
+            selectable=True  # Make text selectable
         )
         self.label.set_hexpand(True)
+        self.label.set_vexpand(False)
+        self.label.set_halign(Gtk.Align.START)  # Align label to start (left)
+        self.label.set_valign(Gtk.Align.START)  # Align label to start (top)
         self.is_pinned = pinned
         # --- Pin button (icon only)
         self.pin_button = Gtk.Button()
@@ -58,7 +64,7 @@ class ClipCard(Gtk.Box):
 
         # --- Button column (Menu on top, Pin below)
         button_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
-        button_box.set_valign(Gtk.Align.CENTER)
+        button_box.set_valign(Gtk.Align.START)  # Align buttons to top instead of center
         button_box.append(self.menu_button)
         button_box.append(self.pin_button)
 

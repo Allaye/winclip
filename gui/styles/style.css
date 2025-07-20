@@ -1,11 +1,10 @@
 /* Clip card styles */
 .clip-card {
     background-color: #1e1e1e;
-    padding: 10px;
-    border-radius: 8px;
+    padding: 8px;
+    border-radius: 6px;
     border: 1px solid #333;
-    min-height: 72px;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
 /* Override the focus/selected outline */
@@ -31,6 +30,12 @@
 .header-title {
     font-weight: bold;
     font-size: 16px;
+}
+
+/* Small title for window header */
+.title-small {
+    font-size: 14px;
+    font-weight: 500;
 }
 
 .clear-button {
