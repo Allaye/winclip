@@ -7,8 +7,8 @@ from gi.repository import Gtk
 class HeaderBar(Gtk.Box):
     def __init__(self, on_clear_all):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
-        self.set_margin_top(12)
-        self.set_margin_bottom(6)
+        self.set_margin_top(4)
+        self.set_margin_bottom(4)
         self.set_margin_start(12)
         self.set_margin_end(12)
         self.set_spacing(8)

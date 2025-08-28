@@ -1,10 +1,19 @@
+/* Window styles */
+window {
+    background-color: rgba(32, 32, 32, 0.95);
+    border-radius: 12px;
+}
+
 /* Clip card styles */
 .clip-card {
-    background-color: #1e1e1e;
-    padding: 8px;
-    border-radius: 6px;
-    border: 1px solid #333;
+    background-color: rgba(45, 45, 45, 0.9);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     margin-bottom: 4px;
+    backdrop-filter: blur(10px);
+    min-height: 70px;
+    max-height: 70px;
 }
 
 /* Override the focus/selected outline */
@@ -13,18 +22,22 @@
     box-shadow: 0 0 0 1px white;
     outline: 1px solid white;
     outline-offset: 0;
+    
     border: 1px solid white;
 }
 
 /* Hover effect */
 .clip-card:hover {
-    border: 1px solid #555;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background-color: rgba(55, 55, 55, 0.95);
+    transform: translateY(-1px);
+    transition: all 0.2s ease;
 }
 
 /* Header bar styles */
 .header-bar {
-    padding: 6px;
-    border-bottom: 1px solid #444;
+    padding: 8px 12px;
+    margin: 0 8px;
 }
 
 .header-title {
@@ -42,6 +55,45 @@
     background-color: transparent;
     color: #ccc;
     border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.clear-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+/* Category bar styles */
+.category-bar {
+    background-color: rgba(40, 40, 40, 0.6);
+    border-radius: 8px;
+    margin: 0 8px;
+}
+
+.category-button {
+    background-color: transparent;
+    border: none;
+    border-radius: 6px;
+    padding: 6px;
+    min-width: 32px;
+    min-height: 32px;
+}
+
+.category-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.category-button-active {
+    background-color: rgba(0, 120, 215, 0.3);
+    border: 1px solid rgba(0, 120, 215, 0.6);
+}
+
+.category-icon {
+    font-size: 14px;
+    font-weight: bold;
 }
 
 /* Pin icon styles */
@@ -51,4 +103,22 @@
 
 .unpinned-icon {
     color: #888888; /* muted grey */
+}
+
+/* Clip content text styling */
+.clip-content {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #e0e0e0;
+    font-weight: 400;
+    letter-spacing: 0.2px;
+}
+
+/* No clips message */
+.no-clips-message {
+    color: #888;
+    font-size: 14px;
+    font-style: italic;
+    padding: 40px;
 }
