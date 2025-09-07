@@ -55,3 +55,4 @@ if __name__ == "__main__":
     win = launch_gui()
     print(f"GUI launched, main window reference stored: {win}")
     window_ref["win"] = win
+
