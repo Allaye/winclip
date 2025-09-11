@@ -14,7 +14,12 @@ class ClipCard(Gtk.Box):
         self.set_hexpand(True)
         self.set_vexpand(False)
         self.set_css_classes(["clip-card"])
-        self.set_size_request(-1, -1)  # Allow dynamic height based on content
+        self.set_size_request(-1, 70)  # Fixed height of 70px
+        
+        # Create a fixed-size container for the content
+        content_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        content_container.set_size_request(-1, 70)
+        content_container.set_vexpand(False)
 
 
         # --- Content label with improved text structure
@@ -25,15 +30,16 @@ class ClipCard(Gtk.Box):
             wrap=True,  # Enable wrapping so text breaks to next line
             wrap_mode=Pango.WrapMode.WORD_CHAR,  # Wrap at word boundaries or characters
             ellipsize=Pango.EllipsizeMode.END,  # Show ellipsis for long content
-            max_width_chars=75,  # Optimized width for better readability
+            max_width_chars=50,  # Further reduced width
             selectable=True,  # Make text selectable
-            lines=3  # Allow 3 lines for better content display
+            lines=2  # Limit to 2 lines to fit in 70px height
         )
         self.label.set_hexpand(True)
         self.label.set_vexpand(False)
         self.label.set_halign(Gtk.Align.START)  # Align label to start (left)
         self.label.set_valign(Gtk.Align.START)  # Align label to start (top)
         self.label.set_css_classes(["clip-content"])
+        self.label.set_size_request(-1, 50)  # Constrain label height
         self.is_pinned = pinned
         self.original_content = original_content or content
         # --- Pin button (icon only)
@@ -54,7 +60,7 @@ class ClipCard(Gtk.Box):
         # --- Paste button
         self.paste_button = Gtk.Button(icon_name="edit-paste-symbolic")
         self.paste_button.set_valign(Gtk.Align.CENTER)
-        self.paste_button.set_tooltip_text("Paste directly at cursor location")
+        self.paste_button.set_tooltip_text("Paste at cursor (requires ydotool)")
         self.paste_button.connect("clicked", self.paste_to_clipboard)
 
         # # --- Pack widgets
@@ -66,12 +72,16 @@ class ClipCard(Gtk.Box):
         button_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         button_box.set_valign(Gtk.Align.START)  # Align buttons to top instead of center
         button_box.set_margin_start(8)  # Add some space between content and buttons
+        button_box.set_size_request(-1, 50)  # Constrain button box height
         button_box.append(self.paste_button)
         button_box.append(self.pin_button)
 
-        # --- Pack main layout: label on left, button box on right
-        self.append(self.label)
-        self.append(button_box)
+        # --- Pack content container: label on left, button box on right
+        content_container.append(self.label)
+        content_container.append(button_box)
+        
+        # --- Pack main layout: content container
+        self.append(content_container)
 
         #  connect action signals
         self.pin_button.connect("clicked", self.toggle_pin)
@@ -94,19 +104,72 @@ class ClipCard(Gtk.Box):
     def paste_to_clipboard(self, button):
         """Paste content directly at cursor location"""
         import subprocess
+        import time
         
         try:
-            # Use xdotool to type the content directly at cursor location
-            subprocess.run(['xdotool', 'type', self.original_content], check=True)
-            print(f"[Paste] Successfully pasted at cursor: {self.original_content[:50]}...")
+            # Method 1: Try ydotool type (direct typing at cursor)
+            try:
+                result = subprocess.run(['ydotool', 'type', self.original_content], 
+                                      capture_output=True, text=True, timeout=5)
+                if result.returncode == 0:
+                    return  # Success - content typed at cursor
+                else:
+                    pass  # Continue to next method
+            except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+                pass  # Continue to next method
             
-        except (subprocess.CalledProcessError, FileNotFoundError):
-            # xdotool not available or failed
-            print(f"[Info] xdotool not available - install it for direct pasting")
-            print(f"[Info] Command: sudo apt install xdotool")
+            # Method 2: Try xdotool type (legacy direct typing)
+            try:
+                result = subprocess.run(['xdotool', 'type', self.original_content], 
+                                      capture_output=True, text=True, timeout=5)
+                if result.returncode == 0:
+                    return  # Success - content typed at cursor
+                else:
+                    pass  # Continue to next method
+            except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+                pass  # Continue to next method
             
-        except Exception as e:
-            print(f"[Error] Failed to paste at cursor: {e}")
+            # Method 3: Copy to clipboard + simulate Ctrl+V (paste at cursor)
+            try:
+                # Copy content to clipboard
+                process = subprocess.Popen(['xclip', '-selection', 'clipboard'], stdin=subprocess.PIPE)
+                process.communicate(input=self.original_content.encode('utf-8'))
+                
+                # Small delay to ensure clipboard is updated
+                time.sleep(0.1)
+                
+                # Try to simulate Ctrl+V with ydotool (this pastes at cursor)
+                try:
+                    result = subprocess.run(['ydotool', 'key', 'ctrl+v'], 
+                                          capture_output=True, text=True, timeout=3)
+                    if result.returncode == 0:
+                        return  # Success - content pasted at cursor
+                except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+                    pass
+                
+                # Try xdotool Ctrl+V (this pastes at cursor)
+                try:
+                    result = subprocess.run(['xdotool', 'key', 'ctrl+v'], 
+                                          capture_output=True, text=True, timeout=3)
+                    if result.returncode == 0:
+                        return  # Success - content pasted at cursor
+                except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+                    pass
+                
+            except Exception:
+                pass  # Continue to fallback
+            
+            # Method 4: Fallback - copy to clipboard (user must press Ctrl+V)
+            try:
+                # Copy content to clipboard
+                process = subprocess.Popen(['xclip', '-selection', 'clipboard'], stdin=subprocess.PIPE)
+                process.communicate(input=self.original_content.encode('utf-8'))
+                # Content is now in clipboard - user can press Ctrl+V to paste at cursor
+            except Exception:
+                pass  # Silent failure
+            
+        except Exception:
+            pass  # Silent failure
 
 
 
