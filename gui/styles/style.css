@@ -12,8 +12,10 @@ window {
     border: 1px solid rgba(255, 255, 255, 0.1);
     margin-bottom: 4px;
     backdrop-filter: blur(10px);
-    min-height: 70px;
+    height: 70px;
     max-height: 70px;
+    min-height: 70px;
+    overflow: hidden;
 }
 
 /* Override the focus/selected outline */
