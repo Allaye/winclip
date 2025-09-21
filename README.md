@@ -54,7 +54,8 @@ Coming from Windows and Android, I found that **existing Linux clipboard tools j
 
 **Windows clipboard manager (Win + V) and Android's clipboard are the best implementations ever** - they're clean, intuitive, and just work. That's exactly what I'm trying to replicate here.
 
-### What makes WinClip different:
+<details>
+<summary><strong>What makes WinClip different</strong></summary>
 
 - **🎯 Familiar UX** - Designed to feel like Windows clipboard manager
 - **📱 Mobile-inspired** - Clean interface inspired by Android's clipboard
@@ -63,16 +64,21 @@ Coming from Windows and Android, I found that **existing Linux clipboard tools j
 - **🎨 Modern design** - Clean, dark theme that doesn't feel cluttered
 - **🔧 Built for Linux** - Native GTK4 integration, works seamlessly with your desktop
 
-### Why existing tools don't cut it:
+</details>
+
+<details>
+<summary><strong>Why existing tools don't cut it</strong></summary>
 
 - **Too complex** - Most Linux clipboard managers are over-engineered
 - **Poor UX** - Awkward interfaces that don't feel natural
 - **Outdated design** - Look and feel like they're from 2010
 
-
 WinClip brings the **Windows/Android clipboard experience to Linux** - simple, fast, and intuitive.
 
-### Features
+</details>
+
+<details>
+<summary><strong>Features</strong></summary>
 
 - ✅ **One-click paste** - Click any clip and it automatically pastes (no Ctrl+V needed!)
 - ✅ **Real-time clipboard monitoring** - Captures everything you copy
@@ -85,6 +91,8 @@ WinClip brings the **Windows/Android clipboard experience to Linux** - simple, f
 - 🚧 Search and filter capabilities
 - 🚧 Export/import functionality
 - 🚧 Keyboard shortcuts
+
+</details>
 
 ### Built With
 
