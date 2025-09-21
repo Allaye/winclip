@@ -1,5 +1,4 @@
 # gui/components/clip_card.py
-
 from gi.repository import Gtk, Gio, Pango
 
 
@@ -57,10 +56,10 @@ class ClipCard(Gtk.Box):
         self.pin_button.set_valign(Gtk.Align.CENTER)
         # self.pin_button.set_tooltip_text("Pin this clip")
 
-        # --- Paste button
+        # --- Paste button (automatically pastes content)
         self.paste_button = Gtk.Button(icon_name="edit-paste-symbolic")
         self.paste_button.set_valign(Gtk.Align.CENTER)
-        self.paste_button.set_tooltip_text("Paste at cursor (requires ydotool)")
+        self.paste_button.set_tooltip_text("Copy and paste automatically")
         self.paste_button.connect("clicked", self.paste_to_clipboard)
 
         # # --- Pack widgets
@@ -68,7 +67,7 @@ class ClipCard(Gtk.Box):
         # self.append(self.pin_button)
         # self.append(self.menu_button)
 
-        # --- Button column (Paste on top, Pin below)
+        # --- Button column (Auto-paste on top, Pin below)
         button_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         button_box.set_valign(Gtk.Align.START)  # Align buttons to top instead of center
         button_box.set_margin_start(8)  # Add some space between content and buttons
@@ -89,7 +88,6 @@ class ClipCard(Gtk.Box):
 
 
 
-
     def toggle_pin(self, button):
         self.is_pinned = not self.is_pinned
 
@@ -100,76 +98,63 @@ class ClipCard(Gtk.Box):
         self.pin_button.set_tooltip_text(tooltip)
 
         print(f"[Pin] Toggled: {self.is_pinned}")
+        
+        # TODO: Update pin status in database
+        # This would require passing the clip ID to the ClipCard
+        # and calling engine.storage.pin_unpin_clip()
 
     def paste_to_clipboard(self, button):
-        """Paste content directly at cursor location"""
+        """Copy content to clipboard and automatically paste it using python-uinput"""
         import subprocess
         import time
+        import uinput
         
         try:
-            # Method 1: Try ydotool type (direct typing at cursor)
-            try:
-                result = subprocess.run(['ydotool', 'type', self.original_content], 
-                                      capture_output=True, text=True, timeout=5)
-                if result.returncode == 0:
-                    return  # Success - content typed at cursor
-                else:
-                    pass  # Continue to next method
-            except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
-                pass  # Continue to next method
+            # Copy content to system clipboard using xclip
+            process = subprocess.Popen(['xclip', '-selection', 'clipboard'], stdin=subprocess.PIPE)
+            process.communicate(input=self.original_content.encode('utf-8'))
             
-            # Method 2: Try xdotool type (legacy direct typing)
-            try:
-                result = subprocess.run(['xdotool', 'type', self.original_content], 
-                                      capture_output=True, text=True, timeout=5)
-                if result.returncode == 0:
-                    return  # Success - content typed at cursor
-                else:
-                    pass  # Continue to next method
-            except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
-                pass  # Continue to next method
+            print(f"[Clipboard] Content copied: {self.original_content[:50]}...")
             
-            # Method 3: Copy to clipboard + simulate Ctrl+V (paste at cursor)
+            # Minimize the WinClip window so it doesn't interfere with pasting
             try:
-                # Copy content to clipboard
-                process = subprocess.Popen(['xclip', '-selection', 'clipboard'], stdin=subprocess.PIPE)
-                process.communicate(input=self.original_content.encode('utf-8'))
-                
-                # Small delay to ensure clipboard is updated
-                time.sleep(0.1)
-                
-                # Try to simulate Ctrl+V with ydotool (this pastes at cursor)
-                try:
-                    result = subprocess.run(['ydotool', 'key', 'ctrl+v'], 
-                                          capture_output=True, text=True, timeout=3)
-                    if result.returncode == 0:
-                        return  # Success - content pasted at cursor
-                except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
-                    pass
-                
-                # Try xdotool Ctrl+V (this pastes at cursor)
-                try:
-                    result = subprocess.run(['xdotool', 'key', 'ctrl+v'], 
-                                          capture_output=True, text=True, timeout=3)
-                    if result.returncode == 0:
-                        return  # Success - content pasted at cursor
-                except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
-                    pass
-                
-            except Exception:
-                pass  # Continue to fallback
+                # Get the window and minimize it
+                window = button.get_root()
+                if window:
+                    window.minimize()
+                    print("[Clipboard] WinClip window minimized")
+            except:
+                pass
             
-            # Method 4: Fallback - copy to clipboard (user must press Ctrl+V)
+            # Give user time to click on VS Code or any other application
+            print("[Clipboard] Click on VS Code (or any app) where you want to paste, then wait...")
+            time.sleep(2.0)  # Give user 2 seconds to click on target app
+            
+            # Automatically paste using python-uinput
             try:
-                # Copy content to clipboard
-                process = subprocess.Popen(['xclip', '-selection', 'clipboard'], stdin=subprocess.PIPE)
-                process.communicate(input=self.original_content.encode('utf-8'))
-                # Content is now in clipboard - user can press Ctrl+V to paste at cursor
-            except Exception:
-                pass  # Silent failure
+                # Create virtual keyboard device
+                device = uinput.Device([
+                    uinput.KEY_LEFTCTRL,
+                    uinput.KEY_V,
+                ])
+                
+                # Simulate Ctrl+V
+                device.emit_combo([
+                    uinput.KEY_LEFTCTRL,
+                    uinput.KEY_V,
+                ])
+                
+                # Clean up
+                device.destroy()
+                
+                print("[Clipboard] Content automatically pasted!")
+                
+            except Exception as e:
+                print(f"[Clipboard] Auto-paste failed: {e}")
+                print("[Clipboard] Content is in clipboard - press Ctrl+V to paste")
             
-        except Exception:
-            pass  # Silent failure
+        except Exception as e:
+            print(f"[Clipboard] Error: {e}")
 
 
 
