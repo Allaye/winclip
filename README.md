@@ -67,9 +67,8 @@ Coming from Windows and Android, I found that **existing Linux clipboard tools j
 
 - **Too complex** - Most Linux clipboard managers are over-engineered
 - **Poor UX** - Awkward interfaces that don't feel natural
-- **Manual pasting** - Require you to remember Ctrl+V after clicking
 - **Outdated design** - Look and feel like they're from 2010
-- **Resource heavy** - Bloated with features you don't need
+
 
 WinClip brings the **Windows/Android clipboard experience to Linux** - simple, fast, and intuitive.
 
@@ -237,12 +236,6 @@ Represents a clipboard entry with the following attributes:
 - [ ] Keyboard shortcuts for quick access
 - [ ] System tray integration
 - [ ] Support for image and file clips
-- [ ] Cloud synchronization
-- [ ] Plugin system for extensibility
-- [ ] Multi-language support
-  - [ ] French
-  - [ ] Spanish
-  - [ ] German
 
 See the [open issues](https://github.com/Allaye/winclip/issues) for a full list of proposed features and known issues.
 
@@ -274,14 +267,6 @@ Project Link: [https://github.com/Allaye/winclip](https://github.com/Allaye/winc
 
 ---
 
-## Acknowledgments
-
-Special thanks to the following resources and communities:
-
-- [Python Community](https://python.org/) for the excellent language and ecosystem
-- [SQLite](https://sqlite.org/) for the lightweight database solution
-- [UV](https://github.com/astral-sh/uv) for modern Python package management
-- [GitHub](https://github.com) for hosting and collaboration tools
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [contributors-shield]: https://img.shields.io/github/contributors/Allaye/winclip.svg?style=for-the-badge
