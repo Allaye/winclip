@@ -3,7 +3,7 @@
 <div align="center">
   <h3 align="center">WinClip - Smart Clipboard Manager</h3>
   <p align="center">
-    A lightweight, cross-platform clipboard manager inspired by windows clipboard manager
+    A lightweight, cross-platform clipboard manager inspired by Windows clipboard manager
     <br />
     <a href="#usage"><strong>View Usage Examples »</strong></a>
     <br />
@@ -12,6 +12,11 @@
     ·
     <a href="https://github.com/Allaye/winclip/issues">Request Feature</a>
   </p>
+</div>
+
+<div align="center">
+  <img src="current_sample.png" alt="WinClip Screenshot" width="400" />
+  <p><em>WinClip in action - Clean, intuitive interface just like Windows clipboard manager</em></p>
 </div>
 
 [![Contributors][contributors-shield]][contributors-url]
@@ -43,26 +48,44 @@
 
 WinClip is a lightweight, cross-platform clipboard manager designed to enhance your productivity by keeping track of your clipboard history. Built with Python, it provides a simple yet powerful way to manage and access your copied content.
 
-### Why WinClip?
+## Why WinClip?
 
-- **Never lose copied content again** - Automatically saves every item you copy to the clipboard
-- **Lightweight and fast** - Minimal resource usage with efficient SQLite storage
-- **Cross-platform** - Works on Windows, Linux, and macOS
-- **Pin important clips** - Mark frequently used content for easy access
-- **Smart history** - Timestamp tracking and source application detection
-- **Extensible** - Built with a modular architecture for easy feature additions
+Coming from Windows and Android, I found that **existing Linux clipboard tools just don't work intuitively**. The shapes, sizes, and user experience feel off - they're either too cluttered, too basic, or just don't feel right.
+
+**Windows clipboard manager (Win + V) and Android's clipboard are the best implementations ever** - they're clean, intuitive, and just work. That's exactly what I'm trying to replicate here.
+
+### What makes WinClip different:
+
+- **🎯 Familiar UX** - Designed to feel like Windows clipboard manager
+- **📱 Mobile-inspired** - Clean interface inspired by Android's clipboard
+- **⚡ One-click paste** - Click any clip and it automatically pastes (no Ctrl+V needed)
+- **📌 Smart pinning** - Pin important clips for quick access
+- **🎨 Modern design** - Clean, dark theme that doesn't feel cluttered
+- **🔧 Built for Linux** - Native GTK4 integration, works seamlessly with your desktop
+
+### Why existing tools don't cut it:
+
+- **Too complex** - Most Linux clipboard managers are over-engineered
+- **Poor UX** - Awkward interfaces that don't feel natural
+- **Manual pasting** - Require you to remember Ctrl+V after clicking
+- **Outdated design** - Look and feel like they're from 2010
+- **Resource heavy** - Bloated with features you don't need
+
+WinClip brings the **Windows/Android clipboard experience to Linux** - simple, fast, and intuitive.
 
 ### Features
 
-- ✅ Real-time clipboard monitoring
-- ✅ SQLite database storage for persistence
-- ✅ Pin/unpin functionality for important clips
-- ✅ Timestamp tracking for all clipboard entries
-- ✅ Source application detection
-- ✅ Simple command-line interface
-- 🚧 GUI interface (coming soon)
+- ✅ **One-click paste** - Click any clip and it automatically pastes (no Ctrl+V needed!)
+- ✅ **Real-time clipboard monitoring** - Captures everything you copy
+- ✅ **SQLite database storage** - Persistent clipboard history
+- ✅ **Pin/unpin functionality** - Mark important clips for quick access
+- ✅ **Modern GTK4 GUI** - Clean, dark interface that feels native
+- ✅ **Smart content preview** - See your clips at a glance
+- ✅ **Automatic window management** - Minimizes itself when pasting
+- ✅ **Cross-platform ready** - Built with Python for easy porting
 - 🚧 Search and filter capabilities
 - 🚧 Export/import functionality
+- 🚧 Keyboard shortcuts
 
 ### Built With
 
@@ -122,24 +145,33 @@ The clipboard monitor will start automatically and begin tracking your clipboard
 
 ### Basic Usage
 
-1. **Start the clipboard monitor:**
+1. **Start WinClip:**
 
    ```sh
    python main.py
    ```
 
-2. **Copy any text to your clipboard** - WinClip will automatically detect and store it.
+2. **Copy any text** - WinClip automatically detects and stores it in the background.
 
-3. **View recent clips** - The application will display your recent clipboard entries in the terminal.
+3. **Click the paste button** (📋) on any clip - It automatically pastes wherever your cursor is!
 
-### Example Output
+4. **Pin important clips** - Click the lock icon to keep frequently used content at the top.
+
+### How it works
+
+- **Automatic capture** - Everything you copy gets saved automatically
+- **One-click paste** - Click any clip and it pastes instantly (no Ctrl+V needed)
+- **Smart window management** - WinClip minimizes itself when pasting so it doesn't interfere
+- **Persistent storage** - Your clipboard history survives reboots
+
+### Example Workflow
 
 ```
-[+] New clipboard text:
-Hello, this is a test clip!
-
-2025-06-28 08:45:23 - Hello, this is a test clip!... (pinned=False)
-2025-06-28 08:44:15 - Previous clipboard content... (pinned=False)
+1. Copy some text from a website
+2. Open WinClip - your text appears in the list
+3. Click the paste button (📋) on the clip you want
+4. WinClip minimizes and the text appears wherever your cursor is
+5. Done! No manual Ctrl+V required
 ```
 
 ### Programmatic Usage
@@ -196,11 +228,14 @@ Represents a clipboard entry with the following attributes:
 - [x] Core clipboard monitoring functionality
 - [x] SQLite database storage
 - [x] Pin/unpin clips feature
-- [x] Basic CLI interface
-- [ ] GUI application with system tray integration
+- [x] Modern GTK4 GUI interface
+- [x] **One-click automated paste** (the killer feature!)
+- [x] Smart window management
+- [x] Clean, Windows-inspired design
 - [ ] Search and filter functionality
 - [ ] Export/import clipboard history
 - [ ] Keyboard shortcuts for quick access
+- [ ] System tray integration
 - [ ] Support for image and file clips
 - [ ] Cloud synchronization
 - [ ] Plugin system for extensibility
