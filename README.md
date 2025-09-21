@@ -195,7 +195,8 @@ from winclip.engine.storage import insert_clip
 insert_clip(new_clip)
 ```
 
-## API Reference
+<details>
+<summary><strong>API Reference</strong></summary>
 
 ### Core Classes
 
@@ -220,7 +221,7 @@ Represents a clipboard entry with the following attributes:
 - `delete_clip(clip_id: str)` - Delete a specific clip
 - `clear_clips()` - Clear all clips from database
 
-
+</details>
 
 ## Roadmap
 
