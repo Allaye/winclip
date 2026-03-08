@@ -3,13 +3,10 @@ import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk # type: ignore  # noqa: E402
 
-# Assuming widgets.clip_card.ClipCard is correctly defined
-# from widgets.clip_card import ClipCard  # noqa: E402
-from gui import ClipCard # noqa: E402
-# Assuming widgets.header_bar.HeaderBar is your custom header bar for INSIDE the window
-from gui import HeaderBar # noqa: E402
-from gui.widgets.category_bar import CategoryBar
-
+# Import widgets directly
+from .widgets.clip_card import ClipCard
+from .widgets.header_bar import HeaderBar
+from .widgets.category_bar import CategoryBar
 class ClipboardWindow(Gtk.ApplicationWindow):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -57,6 +54,7 @@ class ClipboardWindow(Gtk.ApplicationWindow):
 
         # --- Scrollable List of Clips ---
         self.clip_list = Gtk.ListBox()
+        self.clip_list.connect("row-activated", self.on_row_activated)
         scroll = Gtk.ScrolledWindow()
         scroll.set_child(self.clip_list)
         scroll.set_vexpand(True) # Make it take full height
@@ -64,7 +62,6 @@ class ClipboardWindow(Gtk.ApplicationWindow):
 
         # --- Set Window Child and Load Data ---
         self.set_child(outer)
-        # self.load_fake_data()
         self.refresh_clips()
 
     def create_display_content(self, original_content):
@@ -107,8 +104,16 @@ class ClipboardWindow(Gtk.ApplicationWindow):
     #         card = ClipCard(content=f"Item {i+1}", pinned=(i == 1 or i == 2)) # Item 2 and 3 pinned
     #         self.clip_list.append(card)
 
+    def on_row_activated(self, listbox, row):
+        """When a row is clicked, copy that clip to clipboard and paste."""
+        child = row.get_child()
+        if isinstance(child, ClipCard):
+            child.paste_to_cursor(None)
+
     def clear_all_clips(self):
         print("Clear All clicked!")
+        from engine.storage import clear_clips
+        clear_clips()
         
         # Clear list box - GTK4 way
         while True:
@@ -146,7 +151,7 @@ class ClipboardWindow(Gtk.ApplicationWindow):
                     # Create a display version that preserves structure but limits length
                     display_content = self.create_display_content(clip.content)
                     
-                    card = ClipCard(content=display_content, pinned=clip.pinned, original_content=clip.content)
+                    card = ClipCard(content=display_content, pinned=clip.pinned, original_content=clip.content, clip_id=clip.id)
                     self.clip_list.append(card)
 
 

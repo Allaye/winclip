@@ -150,25 +150,46 @@ The clipboard monitor will start automatically and begin tracking your clipboard
 
 ## Usage
 
-### Basic Usage
+### Background Mode (Recommended)
 
-1. **Start WinClip:**
+WinClip runs in the background and can be accessed with a custom shortcut (recommended: **Ctrl+Alt+C**):
 
-   ```sh
-   python main.py
+1. **Start WinClip in background:**
+   ```bash
+   python3 main.py
    ```
 
-2. **Copy any text** - WinClip automatically detects and stores it in the background.
+2. **Set up custom shortcut** (run once):
+   ```bash
+   ./setup_shortcut.sh
+   ```
 
-3. **Click the paste button** (📋) on any clip - It automatically pastes wherever your cursor is!
+3. **Use your custom shortcut** (e.g., Ctrl+Alt+C) to show/hide the clipboard manager
 
-4. **Pin important clips** - Click the lock icon to keep frequently used content at the top.
+4. **Copy text** from any application - it's automatically captured
+
+5. **Click paste button** to automatically paste content at your cursor
+
+6. **Pin important clips** to keep them at the top
+
+### GUI Mode
+
+For immediate access to the clipboard manager:
+
+```bash
+python3 main.py --gui
+```
+
+### Auto-Start
+
+WinClip will automatically start when you log in (after running `setup_shortcut.sh`).
 
 ### How it works
 
-- **Automatic capture** - Everything you copy gets saved automatically
+- **Background operation** - Runs silently, capturing clipboard changes
+- **Custom shortcut** - Choose your own unique shortcut (recommended: Ctrl+Alt+C)
 - **One-click paste** - Click any clip and it pastes instantly (no Ctrl+V needed)
-- **Smart window management** - WinClip minimizes itself when pasting so it doesn't interfere
+- **Smart window management** - WinClip hides itself when pasting so it doesn't interfere
 - **Persistent storage** - Your clipboard history survives reboots
 
 ### Example Workflow

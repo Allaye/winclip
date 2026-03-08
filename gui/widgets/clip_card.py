@@ -1,10 +1,11 @@
-# gui/components/clip_card.py
-from gi.repository import Gtk, Gio, Pango
-
+# gui/widgets/clip_card.py
+import gi
+gi.require_version("Gtk", "4.0")
+from gi.repository import Gtk, Gdk, GLib, Pango
 
 
 class ClipCard(Gtk.Box):
-    def __init__(self, content: str, pinned=False, original_content=None):
+    def __init__(self, content: str, pinned=False, original_content=None, clip_id=None):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
         self.set_margin_top(4)
         self.set_margin_bottom(4)
@@ -13,149 +14,178 @@ class ClipCard(Gtk.Box):
         self.set_hexpand(True)
         self.set_vexpand(False)
         self.set_css_classes(["clip-card"])
-        self.set_size_request(-1, 70)  # Fixed height of 70px
-        
-        # Create a fixed-size container for the content
+
+        # --- Config
+        FIXED_HEIGHT = 70
+        self.set_size_request(-1, FIXED_HEIGHT)
+
+        # --- Store content
+        self.content = content
+        self.is_pinned = pinned
+        self.original_content = original_content or content
+        self.clip_id = clip_id
+
+        # --- Content container (fixed height)
         content_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
-        content_container.set_size_request(-1, 70)
         content_container.set_vexpand(False)
+        content_container.set_valign(Gtk.Align.FILL)
+        content_container.set_size_request(-1, FIXED_HEIGHT)
 
-
-        # --- Content label with improved text structure
+        # --- Label
         self.label = Gtk.Label(
             label=content,
-            xalign=0,  # Align text to the left
-            yalign=0,  # Align text to the top
-            wrap=True,  # Enable wrapping so text breaks to next line
-            wrap_mode=Pango.WrapMode.WORD_CHAR,  # Wrap at word boundaries or characters
-            ellipsize=Pango.EllipsizeMode.END,  # Show ellipsis for long content
-            max_width_chars=50,  # Further reduced width
-            selectable=True,  # Make text selectable
-            lines=2  # Limit to 2 lines to fit in 70px height
+            xalign=0,
+            yalign=0,
+            wrap=True,
+            wrap_mode=Pango.WrapMode.WORD_CHAR,
+            ellipsize=Pango.EllipsizeMode.END,
+            max_width_chars=50,
+            selectable=True,
         )
         self.label.set_hexpand(True)
         self.label.set_vexpand(False)
-        self.label.set_halign(Gtk.Align.START)  # Align label to start (left)
-        self.label.set_valign(Gtk.Align.START)  # Align label to start (top)
+        self.label.set_valign(Gtk.Align.FILL)
+        self.label.set_halign(Gtk.Align.FILL)
         self.label.set_css_classes(["clip-content"])
-        self.label.set_size_request(-1, 50)  # Constrain label height
-        self.is_pinned = pinned
-        self.original_content = original_content or content
-        # --- Pin button (icon only)
-        self.pin_button = Gtk.Button()
-        if pinned:
-            icon_name = "object-locked-symbolic" # Or "locked-symbolic", "security-high-symbolic"
-            tooltip_text = "Pinned. Click to unpin."
-        else:
-            icon_name = "object-unlocked-symbolic" # Or "unlocked-symbolic", "security-medium-symbolic"
-            tooltip_text = "Not pinned. Click to pin."
-        self.pin_button.set_icon_name(icon_name)
-        self.pin_button.set_tooltip_text(tooltip_text)
-        # icon_name = "pin-symbolic" if pinned else "pin-alt-symbolic"
-        # self.pin_button.set_icon_name(icon_name)
-        self.pin_button.set_valign(Gtk.Align.CENTER)
-        # self.pin_button.set_tooltip_text("Pin this clip")
+        self.label.set_size_request(-1, FIXED_HEIGHT - 20)
 
-        # --- Paste button (automatically pastes content)
+        # --- Buttons
+        self.pin_button = Gtk.Button(icon_name="object-locked-symbolic" if pinned else "object-unlocked-symbolic")
+        self.pin_button.set_tooltip_text("Pinned. Click to unpin." if pinned else "Click to pin.")
+        self.pin_button.set_valign(Gtk.Align.CENTER)
+        self.pin_button.connect("clicked", self.on_pin_clicked)
+
         self.paste_button = Gtk.Button(icon_name="edit-paste-symbolic")
         self.paste_button.set_valign(Gtk.Align.CENTER)
         self.paste_button.set_tooltip_text("Copy and paste automatically")
-        self.paste_button.connect("clicked", self.paste_to_clipboard)
+        self.paste_button.connect("clicked", self.paste_to_cursor)
 
-        # # --- Pack widgets
-        # self.append(self.label)
-        # self.append(self.pin_button)
-        # self.append(self.menu_button)
-
-        # --- Button column (Auto-paste on top, Pin below)
+        # --- Button column
         button_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        button_box.set_valign(Gtk.Align.START)  # Align buttons to top instead of center
-        button_box.set_margin_start(8)  # Add some space between content and buttons
-        button_box.set_size_request(-1, 50)  # Constrain button box height
+        button_box.set_vexpand(False)
+        button_box.set_valign(Gtk.Align.CENTER)
+        button_box.set_size_request(-1, FIXED_HEIGHT - 20)
         button_box.append(self.paste_button)
         button_box.append(self.pin_button)
 
-        # --- Pack content container: label on left, button box on right
+        # --- Pack
         content_container.append(self.label)
         content_container.append(button_box)
-        
-        # --- Pack main layout: content container
         self.append(content_container)
 
-        #  connect action signals
-        self.pin_button.connect("clicked", self.toggle_pin)
-
-
-
-
-    def toggle_pin(self, button):
-        self.is_pinned = not self.is_pinned
-
-        icon_name = "object-locked-symbolic" if self.is_pinned else "object-unlocked-symbolic"
-        tooltip = "Pinned. Click to unpin." if self.is_pinned else "Not pinned. Click to pin."
-
-        self.pin_button.set_icon_name(icon_name)
-        self.pin_button.set_tooltip_text(tooltip)
-
-        print(f"[Pin] Toggled: {self.is_pinned}")
+    def _copy_to_system_clipboard(self):
+        """Copy original_content to system clipboard.
         
-        # TODO: Update pin status in database
-        # This would require passing the clip ID to the ClipCard
-        # and calling engine.storage.pin_unpin_clip()
-
-    def paste_to_clipboard(self, button):
-        """Copy content to clipboard and automatically paste it using python-uinput"""
+        On Wayland, uses wl-copy so the content persists after WinClip
+        loses focus (GDK clipboard data is dropped when the window is
+        minimized/unfocused on Wayland).
+        """
         import subprocess
-        import time
-        import uinput
-        
-        try:
-            # Copy content to system clipboard using xclip
-            process = subprocess.Popen(['xclip', '-selection', 'clipboard'], stdin=subprocess.PIPE)
-            process.communicate(input=self.original_content.encode('utf-8'))
-            
-            print(f"[Clipboard] Content copied: {self.original_content[:50]}...")
-            
-            # Minimize the WinClip window so it doesn't interfere with pasting
+        import shutil
+        import os
+
+        text = self.original_content
+        session_type = os.environ.get("XDG_SESSION_TYPE", "x11")
+
+        if session_type == "wayland" and shutil.which("wl-copy"):
             try:
-                # Get the window and minimize it
-                window = button.get_root()
-                if window:
-                    window.minimize()
-                    print("[Clipboard] WinClip window minimized")
-            except:
-                pass
-            
-            # Give user time to click on VS Code or any other application
-            print("[Clipboard] Click on VS Code (or any app) where you want to paste, then wait...")
-            time.sleep(2.0)  # Give user 2 seconds to click on target app
-            
-            # Automatically paste using python-uinput
-            try:
-                # Create virtual keyboard device
-                device = uinput.Device([
-                    uinput.KEY_LEFTCTRL,
-                    uinput.KEY_V,
-                ])
-                
-                # Simulate Ctrl+V
-                device.emit_combo([
-                    uinput.KEY_LEFTCTRL,
-                    uinput.KEY_V,
-                ])
-                
-                # Clean up
-                device.destroy()
-                
-                print("[Clipboard] Content automatically pasted!")
-                
+                subprocess.Popen(
+                    ["wl-copy"],
+                    stdin=subprocess.PIPE,
+                ).communicate(input=text.encode(), timeout=2)
+                # Also set X11 clipboard for XWayland apps (VS Code, etc.)
+                if shutil.which("xclip"):
+                    subprocess.Popen(
+                        ["xclip", "-selection", "clipboard"],
+                        stdin=subprocess.PIPE,
+                    ).communicate(input=text.encode(), timeout=2)
+                print(f"[Clipboard] Copied via wl-copy + xclip: {text[:60]}...")
+                return True
             except Exception as e:
-                print(f"[Clipboard] Auto-paste failed: {e}")
-                print("[Clipboard] Content is in clipboard - press Ctrl+V to paste")
-            
-        except Exception as e:
-            print(f"[Clipboard] Error: {e}")
+                print(f"[Clipboard] wl-copy failed: {e}")
 
+        # Last resort: GDK4 clipboard (may not persist after focus loss on Wayland)
+        display = Gdk.Display.get_default()
+        if display:
+            clipboard = display.get_clipboard()
+            clipboard.set(text)
+            print(f"[Clipboard] Copied via GDK4: {text[:60]}...")
+            return True
 
+        return False
 
+    def _simulate_paste(self):
+        """Try to simulate Ctrl+V after a delay. Non-blocking."""
+        import subprocess
+        import shutil
+        import os
+
+        # Debug: check what's actually on each clipboard right now
+        try:
+            wayland_clip = subprocess.run(["wl-paste"], capture_output=True, text=True, timeout=1).stdout.strip()
+            print(f"[DEBUG] Wayland clipboard: {wayland_clip[:60]}")
+        except: 
+            pass
+        try:
+            x11_clip = subprocess.run(["xclip", "-selection", "clipboard", "-o"], capture_output=True, text=True, timeout=1).stdout.strip()
+            print(f"[DEBUG] X11 clipboard: {x11_clip[:60]}")
+        except: 
+            pass
+
+        session_type = os.environ.get("XDG_SESSION_TYPE", "x11")
+
+        if session_type == "wayland" and shutil.which("ydotool"):
+            subprocess.Popen(
+                ["ydotool", "key", "ctrl+v"],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+            print("[Paste] Simulated Ctrl+V via ydotool (Wayland)")
+        elif shutil.which("xdotool"):
+            subprocess.Popen(["xdotool", "key", "ctrl+v"])
+            print("[Paste] Simulated Ctrl+V via xdotool")
+        else:
+            print("[Paste] No paste tool available (install ydotool or xdotool)")
+        return False
+
+    def _show_toast(self, message):
+        """Show a brief toast notification on the window."""
+        window = self.get_root()
+        if isinstance(window, Gtk.ApplicationWindow):
+            print(f"[Toast] {message}")
+
+    def paste_to_cursor(self, _button):
+        """Copy content to system clipboard, restore focus to previous app, then simulate Ctrl+V."""
+        
+        # move the content of focus into the system clipboard
+        if not self._copy_to_system_clipboard():
+            print("[Clipboard] Failed to copy — no display available.")
+            return 
+        # get the current window (WinClip) and minimize it (stays in taskbar)
+        window = self.get_root()  # minimize the window (stays in taskbar)
+        # after minimizing, the os should restore focus to the previous app automatically. Wait a moment, then simulate Ctrl+V in that app.
+        # wait for a moment to allow focus to switch, then simulate Ctrl+V in the restored app
+        if isinstance(window, Gtk.Window):
+            window.minimize()
+            GLib.timeout_add(800, self._simulate_paste)  # simulate paste after a short delay
+        
+
+    # --- Pin / Unpin (persists to DB)
+    def on_pin_clicked(self, _button):
+        self.is_pinned = not self.is_pinned
+        self.pin_button.set_icon_name(
+            "object-locked-symbolic" if self.is_pinned else "object-unlocked-symbolic"
+        )
+        self.pin_button.set_tooltip_text(
+            "Pinned. Click to unpin." if self.is_pinned else "Click to pin."
+        )
+        # Persist to database
+        if self.clip_id:
+            from engine.storage import pin_unpin_clip
+            from engine.model import Clip
+            clip = Clip(id=self.clip_id, pinned=self.is_pinned)
+            pin_unpin_clip(clip)
+            print(f"[Pin] {'Pinned' if self.is_pinned else 'Unpinned'} clip {self.clip_id[:8]}")
+        else:
+            print("[Pin] Toggled UI only (no clip_id)")
 

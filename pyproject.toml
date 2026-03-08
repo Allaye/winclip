@@ -5,5 +5,9 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "pyautogui>=0.9.54",
     "python-uinput",
 ]
+
+[tool.ruff.lint.per-file-ignores]
+"gui/**" = ["E402"]
