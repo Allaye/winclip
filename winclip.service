@@ -1,0 +1,14 @@
+[Unit]
+Description=WinClip clipboard daemon
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+WorkingDirectory=/mnt/Work/opensource/clipboard/winclip
+ExecStart=/usr/bin/python3 /mnt/Work/opensource/clipboard/winclip/main.py --daemon
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=default.target

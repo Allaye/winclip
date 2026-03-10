@@ -6,8 +6,8 @@ from gi.repository import GLib # type: ignore[import-untyped]
 from engine.monitor import ClipboardMonitor
 from engine.storage import insert_clip
 from engine.model import Clip
-from .winclip import ClipboardWindow
-from .styles import style
+from app.winclip import ClipboardWindow
+from gui.styles import style
 
 
 def update_ui(text, win):
@@ -20,23 +20,19 @@ def update_ui(text, win):
     return False  # Required for GLib.idle_add
 
 
-def launch_gui():
+def start_app(hide_gui=False):
     # Use a simple application ID
     app = Gtk.Application(application_id="com.allaye.winclip")
 
     def on_activate(app):
         try:
+            if app.win is None:
+                app.win = ClipboardWindow(application=app)
+            should_present = not app.hide_gui
+            app.hide_gui = False
 
-            win = ClipboardWindow(application=app)
-            style.load_css(app)  # Load CSS after window creation
-            win.present()
-
-            def on_clipboard_change(text):
-                GLib.idle_add(update_ui, text, win)
-            
-            monitor = ClipboardMonitor(on_clipboard_change=on_clipboard_change)
-            monitor.start()
-            # window_holder["win"] = win
+            if should_present:
+                app.win.present()
         except Exception as e:
             print(f"Error in on_activate: {e}")
             import traceback
@@ -45,9 +41,25 @@ def launch_gui():
 
     def on_startup(app):
         print("Application starting up...")
+        app.win = None  # Placeholder for window reference
+        app.monitor = None  # Placeholder for monitor reference
+        app.hide_gui = hide_gui  # Store the hide_gui flag in the app instance
+        style.load_css(app)  # Load CSS on startup to ensure styles are available
 
-    app.connect("activate", on_activate)
+        def on_clipboard_change(text):
+            GLib.idle_add(update_ui, text, app.win)  # Pass None for win, will update UI on next refresh
+
+        app.monitor = ClipboardMonitor(on_clipboard_change=on_clipboard_change)
+        app.monitor.start()
+
+    def on_shutdown(app):
+        if app.monitor is not None:
+            app.monitor.stop()
+
     app.connect("startup", on_startup)
+    app.connect("activate", on_activate)
+    app.connect("shutdown", on_shutdown)
+
     
     try:
         # Use run with None instead of empty list - this is important for GTK4
@@ -60,5 +72,4 @@ def launch_gui():
         traceback.print_exc()
         return None
     finally:
-        # Clean up any remaining processes
         app.quit()

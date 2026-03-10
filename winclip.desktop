@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=WinClip
+Comment=Clipboard Manager
+Exec=python3 /mnt/Work/opensource/clipboard/winclip/main.py --show
+Hidden=false
+NoDisplay=false
+Path=/mnt/Work/opensource/clipboard/winclip
+Terminal=false

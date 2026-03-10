@@ -2,11 +2,13 @@
 import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk # type: ignore  # noqa: E402
+from gui.widgets.clip_card import ClipCard
+from gui.widgets.header_bar import HeaderBar
+from gui.widgets.category_bar import CategoryBar
 
-# Import widgets directly
-from .widgets.clip_card import ClipCard
-from .widgets.header_bar import HeaderBar
-from .widgets.category_bar import CategoryBar
+
+
+
 class ClipboardWindow(Gtk.ApplicationWindow):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -14,9 +16,12 @@ class ClipboardWindow(Gtk.ApplicationWindow):
         # Configure window titlebar
         window_header_bar = Gtk.HeaderBar()
         window_header_bar.set_show_title_buttons(True)
+        
+        # Hide default centered title widget ("Python")
+        window_header_bar.set_title_widget(Gtk.Box())
 
         # Create smaller title label aligned to the left
-        window_title_label = Gtk.Label(label="WinClip 🪟")
+        window_title_label = Gtk.Label(label="WinClip ⊞ + .")
         window_title_label.set_css_classes(["title-small"])
         window_title_label.set_halign(Gtk.Align.START)
         
@@ -40,6 +45,8 @@ class ClipboardWindow(Gtk.ApplicationWindow):
         # --- Main Layout for Window Content ---
         outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
         
+        # --- Hide on close behavior ---
+        self.connect("close-request", self.on_close_request)
         # --- Category Icons Bar ---
         category_bar = CategoryBar()
         outer.append(category_bar)
@@ -154,5 +161,8 @@ class ClipboardWindow(Gtk.ApplicationWindow):
                     card = ClipCard(content=display_content, pinned=clip.pinned, original_content=clip.content, clip_id=clip.id)
                     self.clip_list.append(card)
 
-
+    def on_close_request(self, *args):
+        """Override close behavior to hide window instead of closing app."""
+        self.hide()
+        return True  # Prevents the default close behavior
 

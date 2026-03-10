@@ -48,8 +48,3 @@ class ClipboardMonitor:
         self._running = False
 
     
-
-
-
-
-

@@ -16,8 +16,8 @@ class CategoryBar(Gtk.Box):
         
         # Create category icons
         categories = [
-            ("heart", "❤️", "Favorites"),
-            ("face-smile", "😊", "Emojis"),
+            ("heart", "♡", "Favorites"),
+            ("face-smile", "☹︎", "Emojis"),
             ("image", "🖼️", "Images"),
             ("face-wink", ";-)", "Expressions"),
             ("percent", "% A+", "Grades"),
