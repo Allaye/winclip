@@ -1,11 +1,22 @@
-# gui/widgets/clip_card.py
+"""Clipboard entry card widget with copy, paste, and pin controls."""
+
 import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, Gdk, GLib, Pango
 
 
 class ClipCard(Gtk.Box):
+    """A card displaying a single clipboard entry with action buttons."""
+
     def __init__(self, content: str, pinned=False, original_content=None, clip_id=None):
+        """Create a clip card.
+
+        Args:
+            content: Truncated display text for the label.
+            pinned: Whether the clip is currently pinned.
+            original_content: Full clipboard text (defaults to *content*).
+            clip_id: Database UUID of the clip.
+        """
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
         self.set_margin_top(4)
         self.set_margin_bottom(4)
@@ -74,11 +85,13 @@ class ClipCard(Gtk.Box):
         self.append(content_container)
 
     def _copy_to_system_clipboard(self):
-        """Copy original_content to system clipboard.
-        
-        On Wayland, uses wl-copy so the content persists after WinClip
-        loses focus (GDK clipboard data is dropped when the window is
-        minimized/unfocused on Wayland).
+        """Copy ``original_content`` to the system clipboard.
+
+        Uses ``wl-copy`` on Wayland (with ``xclip`` fallback for XWayland
+        apps) and falls back to the GDK4 clipboard.
+
+        Returns:
+            True if the copy succeeded, False otherwise.
         """
         import subprocess
         import shutil
@@ -93,44 +106,33 @@ class ClipCard(Gtk.Box):
                     ["wl-copy"],
                     stdin=subprocess.PIPE,
                 ).communicate(input=text.encode(), timeout=2)
-                # Also set X11 clipboard for XWayland apps (VS Code, etc.)
                 if shutil.which("xclip"):
                     subprocess.Popen(
                         ["xclip", "-selection", "clipboard"],
                         stdin=subprocess.PIPE,
                     ).communicate(input=text.encode(), timeout=2)
-                print(f"[Clipboard] Copied via wl-copy + xclip: {text[:60]}...")
                 return True
-            except Exception as e:
-                print(f"[Clipboard] wl-copy failed: {e}")
+            except Exception:
+                pass
 
         # Last resort: GDK4 clipboard (may not persist after focus loss on Wayland)
         display = Gdk.Display.get_default()
         if display:
             clipboard = display.get_clipboard()
             clipboard.set(text)
-            print(f"[Clipboard] Copied via GDK4: {text[:60]}...")
             return True
 
         return False
 
     def _simulate_paste(self):
-        """Try to simulate Ctrl+V after a delay. Non-blocking."""
+        """Simulate a Ctrl+V keystroke via ``ydotool`` or ``xdotool``.
+
+        Returns:
+            False to remove the GLib timeout source.
+        """
         import subprocess
         import shutil
         import os
-
-        # Debug: check what's actually on each clipboard right now
-        try:
-            wayland_clip = subprocess.run(["wl-paste"], capture_output=True, text=True, timeout=1).stdout.strip()
-            print(f"[DEBUG] Wayland clipboard: {wayland_clip[:60]}")
-        except: 
-            pass
-        try:
-            x11_clip = subprocess.run(["xclip", "-selection", "clipboard", "-o"], capture_output=True, text=True, timeout=1).stdout.strip()
-            print(f"[DEBUG] X11 clipboard: {x11_clip[:60]}")
-        except: 
-            pass
 
         session_type = os.environ.get("XDG_SESSION_TYPE", "x11")
 
@@ -140,38 +142,40 @@ class ClipCard(Gtk.Box):
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
             )
-            print("[Paste] Simulated Ctrl+V via ydotool (Wayland)")
         elif shutil.which("xdotool"):
             subprocess.Popen(["xdotool", "key", "ctrl+v"])
-            print("[Paste] Simulated Ctrl+V via xdotool")
-        else:
-            print("[Paste] No paste tool available (install ydotool or xdotool)")
         return False
 
     def _show_toast(self, message):
-        """Show a brief toast notification on the window."""
+        """Show a brief toast notification on the parent window.
+
+        Args:
+            message: The text to display.
+        """
         window = self.get_root()
         if isinstance(window, Gtk.ApplicationWindow):
-            print(f"[Toast] {message}")
+            pass
 
     def paste_to_cursor(self, _button):
-        """Copy content to system clipboard, restore focus to previous app, then simulate Ctrl+V."""
-        
-        # move the content of focus into the system clipboard
+        """Copy content to clipboard, minimise the window, and simulate paste.
+
+        Args:
+            _button: The clicked button widget (unused).
+        """
         if not self._copy_to_system_clipboard():
-            print("[Clipboard] Failed to copy — no display available.")
-            return 
-        # get the current window (WinClip) and minimize it (stays in taskbar)
-        window = self.get_root()  # minimize the window (stays in taskbar)
-        # after minimizing, the os should restore focus to the previous app automatically. Wait a moment, then simulate Ctrl+V in that app.
-        # wait for a moment to allow focus to switch, then simulate Ctrl+V in the restored app
+            return
+        window = self.get_root()
         if isinstance(window, Gtk.Window):
             window.minimize()
             GLib.timeout_add(800, self._simulate_paste)  # simulate paste after a short delay
         
 
-    # --- Pin / Unpin (persists to DB)
     def on_pin_clicked(self, _button):
+        """Toggle the pinned state and persist to the database.
+
+        Args:
+            _button: The clicked button widget (unused).
+        """
         self.is_pinned = not self.is_pinned
         self.pin_button.set_icon_name(
             "object-locked-symbolic" if self.is_pinned else "object-unlocked-symbolic"
@@ -185,7 +189,5 @@ class ClipCard(Gtk.Box):
             from engine.model import Clip
             clip = Clip(id=self.clip_id, pinned=self.is_pinned)
             pin_unpin_clip(clip)
-            print(f"[Pin] {'Pinned' if self.is_pinned else 'Unpinned'} clip {self.clip_id[:8]}")
-        else:
-            print("[Pin] Toggled UI only (no clip_id)")
+
 

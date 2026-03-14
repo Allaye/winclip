@@ -1,3 +1,5 @@
+"""SQLite persistence layer for clipboard history."""
+
 import sqlite3
 import json
 from datetime import datetime
@@ -5,10 +7,14 @@ from engine.model import Clip
 
 DB_PATH = "clipboard_history.db"
 
+
 def _connect():
+    """Open a connection to the clipboard database."""
     return sqlite3.connect(DB_PATH)
 
+
 def init_db():
+    """Create the ``clips`` table if it does not exist."""
     with _connect() as conn:
         cursor = conn.cursor()
         cursor.execute("""
@@ -23,9 +29,14 @@ def init_db():
         )
         """)
         conn.commit()
-        
+
 
 def insert_clip(clip: Clip):
+    """Insert a clip into the database.
+
+    Args:
+        clip: The Clip object to persist.
+    """
     with _connect() as conn:
         cursor = conn.cursor()
         cursor.execute("""
@@ -44,7 +55,14 @@ def insert_clip(clip: Clip):
 
 
 def get_recent_clips(limit=50):
-    # Query and convert rows -> List[Clip]
+    """Fetch the most recent clips.
+
+    Args:
+        limit: Maximum number of clips to return.
+
+    Returns:
+        A list of Clip objects ordered newest-first.
+    """
     with _connect() as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM clips ORDER BY timestamp DESC LIMIT ?", (limit,))
@@ -64,9 +82,10 @@ def get_recent_clips(limit=50):
         return clips
 
 def pin_unpin_clip(clip: Clip):
-    """
-    Pin or unpin a clip.
-    :param clip: The Clip object to pin or unpin.
+    """Update the pinned state of a clip.
+
+    Args:
+        clip: A Clip whose ``id`` and ``pinned`` fields are used.
     """
     with _connect() as conn:
         cursor = conn.cursor()
@@ -76,9 +95,10 @@ def pin_unpin_clip(clip: Clip):
         conn.commit()
 
 def delete_clip(clip_id: str):
-    """
-    Delete a clip by its ID.
-    :param clip_id: The ID of the clip to delete.
+    """Delete a single clip by ID.
+
+    Args:
+        clip_id: The UUID of the clip to remove.
     """
     with _connect() as conn:
         cursor = conn.cursor()
@@ -86,12 +106,8 @@ def delete_clip(clip_id: str):
         conn.commit()
 
 def clear_clips():
-    """
-    Clear all clips from the database, except for pinned clips.
-    """
-    # Delete all non-pinned clips
+    """Delete all clips from the database."""
     with _connect() as conn:
         cursor = conn.cursor()
         cursor.execute("DELETE FROM clips")
         conn.commit()
-    pass

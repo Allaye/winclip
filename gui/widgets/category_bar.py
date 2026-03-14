@@ -1,10 +1,14 @@
-# gui/widgets/category_bar.py
+"""Category filter bar widget."""
+
 import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk
 
+
 class CategoryBar(Gtk.Box):
+    """Horizontal bar of category filter buttons."""
     def __init__(self):
+        """Create the category bar with clipboard filter button."""
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
         self.set_margin_top(4)
         self.set_margin_bottom(4)
@@ -16,11 +20,6 @@ class CategoryBar(Gtk.Box):
         
         # Create category icons
         categories = [
-            ("heart", "♡", "Favorites"),
-            ("face-smile", "☹︎", "Emojis"),
-            ("image", "🖼️", "Images"),
-            ("face-wink", ";-)", "Expressions"),
-            ("percent", "% A+", "Grades"),
             ("edit-copy", "📋", "Clipboard")
         ]
         
@@ -42,6 +41,12 @@ class CategoryBar(Gtk.Box):
             self.append(button)
     
     def on_category_clicked(self, button, category):
+        """Highlight the clicked category button.
+
+        Args:
+            button: The clicked ``Gtk.Button``.
+            category: The icon name identifying the category.
+        """
         # Remove active class from all buttons
         for child in self:
             if isinstance(child, Gtk.Button):
@@ -49,6 +54,4 @@ class CategoryBar(Gtk.Box):
         
         # Add active class to clicked button
         button.set_css_classes(["category-button", "category-button-active"])
-        
-        print(f"Category clicked: {category}")
-        # TODO: Implement category filtering
+

@@ -1,10 +1,11 @@
 #!/bin/bash
 
+set -e
+
 # WinClip Keyboard Shortcut Setup Script
 
 echo "Setting up WinClip keyboard shortcut..."
 echo ""
-echo "💡 TIP: Run './choose_shortcut.py' for an interactive shortcut chooser!"
 echo ""
 
 # Get the current directory
@@ -16,18 +17,32 @@ SYSTEMD_USER_DIR="$HOME/.config/systemd/user"
 echo "WinClip directory: $WINCLIP_DIR"
 echo "Show command: $SHOW_COMMAND"
 
+echo ""
+echo "Installing WinClip dependencies..."
+
+if command -v uv >/dev/null 2>&1; then
+	(cd "$WINCLIP_DIR" && uv sync)
+elif command -v pip3 >/dev/null 2>&1; then
+	(cd "$WINCLIP_DIR" && pip3 install -e .)
+else
+	echo "Warning: neither 'uv' nor 'pip3' was found. Skipping Python dependency installation."
+fi
+
+if command -v apt-get >/dev/null 2>&1; then
+	SYSTEM_PACKAGES=(xclip wl-clipboard ydotool xdotool)
+	echo "Installing system packages: ${SYSTEM_PACKAGES[*]}"
+	sudo apt-get update
+	sudo apt-get install -y "${SYSTEM_PACKAGES[@]}"
+else
+	echo "Warning: unsupported package manager. Install these packages manually: xclip wl-clipboard ydotool xdotool"
+fi
+
 # Install the systemd user service for login startup
 mkdir -p "$SYSTEMD_USER_DIR"
-cp "$SERVICE_SOURCE" "$SYSTEMD_USER_DIR/winclip.service"
+sed "s|%WINCLIP_DIR%|$WINCLIP_DIR|g" "$SERVICE_SOURCE" > "$SYSTEMD_USER_DIR/winclip.service"
 systemctl --user daemon-reload
 systemctl --user enable --now winclip.service
 echo "Installed and started user service: winclip.service"
-
-# Install the launcher desktop entry for app menus
-APPLICATIONS_DIR="$HOME/.local/share/applications"
-mkdir -p "$APPLICATIONS_DIR"
-cp "$WINCLIP_DIR/winclip.desktop" "$APPLICATIONS_DIR/"
-echo "Installed desktop launcher"
 
 # Instructions for setting up keyboard shortcut
 echo ""

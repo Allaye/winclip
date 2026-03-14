@@ -2,14 +2,12 @@
 
 ## v1.0.0
 
-### Added or Changed
-- Added this changelog :)
-- Fixed typos in both templates
-- Back to top links
-- Added more "Built With" frameworks/libraries
-- Changed table of contents to start collapsed
-- Added checkboxes for major features on roadmap
-
-### Removed
-
-- Some packages/libraries from acknowledgements I no longer use
+### Added
+- GTK4 clipboard manager with dark-themed UI
+- Background daemon mode (`--daemon`) with systemd user service
+- Show/hide window on demand (`--show`) via keyboard shortcut
+- Clipboard history stored in SQLite
+- Copy-to-clipboard and paste-to-cursor support
+- Wayland and X11 clipboard support (wl-copy, xclip)
+- Keyboard simulation for paste (ydotool, xdotool)
+- One-command setup script (`setup_shortcut.sh`)

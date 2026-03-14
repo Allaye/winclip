@@ -5,8 +5,8 @@ PartOf=graphical-session.target
 
 [Service]
 Type=simple
-WorkingDirectory=/mnt/Work/opensource/clipboard/winclip
-ExecStart=/usr/bin/python3 /mnt/Work/opensource/clipboard/winclip/main.py --daemon
+WorkingDirectory=%WINCLIP_DIR%
+ExecStart=/usr/bin/python3 %WINCLIP_DIR%/main.py --daemon
 Restart=on-failure
 RestartSec=2
 

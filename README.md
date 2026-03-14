@@ -1,311 +1,109 @@
 # WinClip
 
-<div align="center">
-  <h3 align="center">WinClip - Smart Clipboard Manager</h3>
-  <p align="center">
-    A lightweight, cross-platform clipboard manager inspired by Windows clipboard manager
-    <br />
-    <a href="#usage"><strong>View Usage Examples »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/Allaye/winclip/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/Allaye/winclip/issues">Request Feature</a>
-  </p>
-</div>
+WinClip is a GTK4 clipboard manager for Linux with persistent history, pinning, one-click paste, and a background session mode that can be summoned on demand.
 
-<div align="center">
-  <img src="current_sample.png" alt="WinClip Screenshot" width="400" />
-  <p><em>WinClip in action - Clean, intuitive interface just like Windows clipboard manager</em></p>
-</div>
+## Features
 
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
+- Clipboard history stored in SQLite
+- Pin and unpin important clips
+- One-click paste for saved entries
+- Background mode with hidden startup
+- Show-on-demand UI using `--show`
+- Login startup through a user `systemd` service
 
+## Requirements
 
+- Python 3.12+
+- GTK4 / PyGObject
+- `xclip`
+- `wl-copy` on Wayland
+- `ydotool` for simulated paste
 
-## Table of Contents
+## Installation
 
-- [About The Project](#about-the-project)
-  - [Features](#features)
-  - [Built With](#built-with)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [Usage](#usage)
-- [API Reference](#api-reference)
-- [Roadmap](#roadmap)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
-
-
-
-## About The Project
-
-WinClip is a lightweight, cross-platform clipboard manager designed to enhance your productivity by keeping track of your clipboard history. Built with Python, it provides a simple yet powerful way to manage and access your copied content.
-
-## Why WinClip?
-
-Coming from Windows and Android, I found that **existing Linux clipboard tools just don't work intuitively**. The shapes, sizes, and user experience feel off - they're either too cluttered, too basic, or just don't feel right.
-
-**Windows clipboard manager (Win + V) and Android's clipboard are the best implementations ever** - they're clean, intuitive, and just work. That's exactly what I'm trying to replicate here.
-
-<details>
-<summary><strong>What makes WinClip different</strong></summary>
-
-- **🎯 Familiar UX** - Designed to feel like Windows clipboard manager
-- **📱 Mobile-inspired** - Clean interface inspired by Android's clipboard
-- **⚡ One-click paste** - Click any clip and it automatically pastes (no Ctrl+V needed)
-- **📌 Smart pinning** - Pin important clips for quick access
-- **🎨 Modern design** - Clean, dark theme that doesn't feel cluttered
-- **🔧 Built for Linux** - Native GTK4 integration, works seamlessly with your desktop
-
-</details>
-
-<details>
-<summary><strong>Why existing tools don't cut it</strong></summary>
-
-- **Too complex** - Most Linux clipboard managers are over-engineered
-- **Poor UX** - Awkward interfaces that don't feel natural
-- **Outdated design** - Look and feel like they're from 2010
-
-WinClip brings the **Windows/Android clipboard experience to Linux** - simple, fast, and intuitive.
-
-</details>
-
-<details>
-<summary><strong>Features</strong></summary>
-
-- ✅ **One-click paste** - Click any clip and it automatically pastes (no Ctrl+V needed!)
-- ✅ **Real-time clipboard monitoring** - Captures everything you copy
-- ✅ **SQLite database storage** - Persistent clipboard history
-- ✅ **Pin/unpin functionality** - Mark important clips for quick access
-- ✅ **Modern GTK4 GUI** - Clean, dark interface that feels native
-- ✅ **Smart content preview** - See your clips at a glance
-- ✅ **Automatic window management** - Minimizes itself when pasting
-- ✅ **Cross-platform ready** - Built with Python for easy porting
-- 🚧 Search and filter capabilities
-- 🚧 Export/import functionality
-- 🚧 Keyboard shortcuts
-
-</details>
-
-### Built With
-
-- [Python 3.12+](https://python.org/) - Core language
-- [SQLite](https://sqlite.org/) - Database storage
-- [UV](https://github.com/astral-sh/uv) - Package management
-
-
-
-## Getting Started
-
-To get WinClip up and running on your local machine, follow these simple steps.
-
-### Prerequisites
-
-- Python 3.12 or higher
-- [UV package manager](https://github.com/astral-sh/uv) (recommended) or pip
-
-Install UV (if you don't have it):
-
-```sh
-curl -LsSf https://astral.sh/uv/install.sh | sh
+```bash
+git clone https://github.com/Allaye/winclip.git
+cd winclip
+./setup_shortcut.sh
 ```
 
-### Installation
+The setup script:
 
-1. Clone the repository:
+- installs Python dependencies with `uv sync` when available
+- falls back to `pip3 install -e .`
+- installs required system packages on Debian/Ubuntu systems
+- installs and enables the user `systemd` service
 
-   ```sh
-   git clone https://github.com/Allaye/winclip.git
-   cd winclip
-   ```
+Run the UI with:
 
-2. Install dependencies using UV:
+```bash
+python3 main.py --show
+```
 
-   ```sh
-   uv sync
-   ```
+If you prefer a manual Python install:
 
-   Or using pip:
+```bash
+pip install -e .
+```
 
-   ```sh
-   pip install -e .
-   ```
+Then run:
 
-3. Run the application:
-
-   ```sh
-   python main.py
-   ```
-
-The clipboard monitor will start automatically and begin tracking your clipboard activity.
-
-
+```bash
+python3 main.py --show
+```
 
 ## Usage
 
-### Background Mode (Recommended)
-
-WinClip runs in the background and can be accessed with a custom shortcut (recommended: **Ctrl+Alt+C**):
-
-1. **Start WinClip in background:**
-   ```bash
-   python3 main.py
-   ```
-
-2. **Set up custom shortcut** (run once):
-   ```bash
-   ./setup_shortcut.sh
-   ```
-
-3. **Use your custom shortcut** (e.g., Ctrl+Alt+C) to show/hide the clipboard manager
-
-4. **Copy text** from any application - it's automatically captured
-
-5. **Click paste button** to automatically paste content at your cursor
-
-6. **Pin important clips** to keep them at the top
-
-### GUI Mode
-
-For immediate access to the clipboard manager:
+Show the UI:
 
 ```bash
-python3 main.py --gui
+python3 main.py --show
 ```
 
-### Auto-Start
+Start in background mode:
 
-WinClip will automatically start when you log in (after running `setup_shortcut.sh`).
-
-### How it works
-
-- **Background operation** - Runs silently, capturing clipboard changes
-- **Custom shortcut** - Choose your own unique shortcut (recommended: Ctrl+Alt+C)
-- **One-click paste** - Click any clip and it pastes instantly (no Ctrl+V needed)
-- **Smart window management** - WinClip hides itself when pasting so it doesn't interfere
-- **Persistent storage** - Your clipboard history survives reboots
-
-### Example Workflow
-
-```
-1. Copy some text from a website
-2. Open WinClip - your text appears in the list
-3. Click the paste button (📋) on the clip you want
-4. WinClip minimizes and the text appears wherever your cursor is
-5. Done! No manual Ctrl+V required
+```bash
+python3 main.py --daemon
 ```
 
-### Programmatic Usage
+After the window is closed, it hides and can be shown again with:
 
-You can also use WinClip's components in your own Python projects:
-
-```python
-from winclip.engine.storage import get_recent_clips, init_db
-from winclip.engine.model import Clip
-
-# Initialize the database
-init_db()
-
-# Get recent clips
-clips = get_recent_clips(limit=10)
-for clip in clips:
-    print(f"{clip.timestamp}: {clip.content[:50]}...")
-
-# Create and store a new clip
-new_clip = Clip(content="My custom clip content")
-from winclip.engine.storage import insert_clip
-insert_clip(new_clip)
+```bash
+python3 main.py --show
 ```
 
-<details>
-<summary><strong>API Reference</strong></summary>
+## Autostart And Shortcut
 
-### Core Classes
+Install the user service:
 
-#### `Clip`
+```bash
+./setup_shortcut.sh
+```
 
-Represents a clipboard entry with the following attributes:
+This installs:
 
-- `id` (str): Unique identifier
-- `content` (str): The clipboard content
-- `timestamp` (datetime): When the clip was created
-- `pinned` (bool): Whether the clip is pinned
-- `source_app` (str, optional): Source application
-- `type` (str): Content type (default: "text")
-- `tags` (list, optional): Associated tags
+- `winclip.service` into `~/.config/systemd/user`
 
-### Storage Functions
+Recommended keyboard shortcut command:
 
-- `init_db()` - Initialize the SQLite database
-- `insert_clip(clip: Clip)` - Store a new clip
-- `get_recent_clips(limit=50)` - Retrieve recent clips
-- `pin_unpin_clip(clip: Clip)` - Toggle pin status
-- `delete_clip(clip_id: str)` - Delete a specific clip
-- `clear_clips()` - Clear all clips from database
+```bash
+python3 /path/to/winclip/main.py --show
+```
 
-</details>
+Use the full absolute path for desktop shortcuts so the command works outside the repository directory.
 
-## Roadmap
+Check the background service:
 
-- [x] Core clipboard monitoring functionality
-- [x] SQLite database storage
-- [x] Pin/unpin clips feature
-- [x] Modern GTK4 GUI interface
-- [x] **One-click automated paste** (the killer feature!)
-- [x] Smart window management
-- [x] Clean, Windows-inspired design
-- [ ] Search and filter functionality
-- [ ] Export/import clipboard history
-- [ ] Keyboard shortcuts for quick access
-- [ ] System tray integration
-- [ ] Support for image and file clips
+```bash
+systemctl --user status winclip.service
+```
 
-See the [open issues](https://github.com/Allaye/winclip/issues) for a full list of proposed features and known issues.
+## Notes
 
-
-
-## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+- On Wayland, clipboard writing uses `wl-copy`.
+- Standard paste currently targets editor-style paste behavior.
+- Many terminals use `Ctrl+Shift+V` instead of `Ctrl+V`.
 
 ## License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
-
-## Contact
-
-Allaye - [@Allaye](https://github.com/Allaye)
-
-Project Link: [https://github.com/Allaye/winclip](https://github.com/Allaye/winclip)
-
-
-
----
-
-
-<!-- MARKDOWN LINKS & IMAGES -->
-[contributors-shield]: https://img.shields.io/github/contributors/Allaye/winclip.svg?style=for-the-badge
-[contributors-url]: https://github.com/Allaye/winclip/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/Allaye/winclip.svg?style=for-the-badge
-[forks-url]: https://github.com/Allaye/winclip/network/members
-[stars-shield]: https://img.shields.io/github/stars/Allaye/winclip.svg?style=for-the-badge
-[stars-url]: https://github.com/Allaye/winclip/stargazers
-[issues-shield]: https://img.shields.io/github/issues/Allaye/winclip.svg?style=for-the-badge
-[issues-url]: https://github.com/Allaye/winclip/issues
-[license-shield]: https://img.shields.io/github/license/Allaye/winclip.svg?style=for-the-badge
-[license-url]: https://github.com/Allaye/winclip/blob/master/LICENSE.txt
+MIT. See `LICENSE.txt`.

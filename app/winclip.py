@@ -1,4 +1,4 @@
-# gui/window.py
+"""Main application window for WinClip."""
 import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk # type: ignore  # noqa: E402
@@ -10,6 +10,8 @@ from gui.widgets.category_bar import CategoryBar
 
 
 class ClipboardWindow(Gtk.ApplicationWindow):
+    """Main window displaying clipboard history with pin and paste controls."""
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         
@@ -39,8 +41,6 @@ class ClipboardWindow(Gtk.ApplicationWindow):
         self.set_margin_end(0)
         self.set_resizable(False)
         self.set_deletable(True)
-        # self.set_hide_on_close(True) # If you want to hide instead of close
-        # self.set_titlebar(None) # This removes the titlebar entirely, commented out as you want one.
 
         # --- Main Layout for Window Content ---
         outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
@@ -52,10 +52,7 @@ class ClipboardWindow(Gtk.ApplicationWindow):
         outer.append(category_bar)
         
         # --- Custom Header for Inner Content (your widgets.header_bar.HeaderBar) ---
-        # This is the "Clipboard" label + "Clear all" button row you showed in the screenshot.
-        # Ensure that in widgets/header_bar.py, your custom HeaderBar uses:
-        # self.title_label.set_halign(Gtk.Align.START)
-        # self.title_label.set_hexpand(True)
+        
         inner_content_header = HeaderBar(on_clear_all=self.clear_all_clips)
         outer.append(inner_content_header)
 
@@ -72,9 +69,14 @@ class ClipboardWindow(Gtk.ApplicationWindow):
         self.refresh_clips()
 
     def create_display_content(self, original_content):
-        """
-        Create a display version of content that preserves structure but fits in the UI.
-        This method creates a preview that maintains formatting while being display-friendly.
+        """Create a truncated preview of clipboard content for display.
+
+        Args:
+            original_content: The full clipboard text.
+
+        Returns:
+            A string with at most 3 lines and 200 characters, with
+            ``...`` appended when truncated.
         """
         if not original_content:
             return ""
@@ -104,21 +106,19 @@ class ClipboardWindow(Gtk.ApplicationWindow):
         
         return display_content
 
-    # def load_fake_data(self):
-    #     for i in range(5):
-    #         # Pass False for Item 1 to match the screenshot where Item 1 is unpinned
-    #         # and Item 2 and 3 are pinned (assuming green lock means pinned, red unpinned)
-    #         card = ClipCard(content=f"Item {i+1}", pinned=(i == 1 or i == 2)) # Item 2 and 3 pinned
-    #         self.clip_list.append(card)
-
     def on_row_activated(self, listbox, row):
-        """When a row is clicked, copy that clip to clipboard and paste."""
+        """Copy and paste the activated row's clip content.
+
+        Args:
+            listbox: The parent ``Gtk.ListBox``.
+            row: The activated ``Gtk.ListBoxRow``.
+        """
         child = row.get_child()
         if isinstance(child, ClipCard):
             child.paste_to_cursor(None)
 
     def clear_all_clips(self):
-        print("Clear All clicked!")
+        """Delete all clips from the database and refresh the list."""
         from engine.storage import clear_clips
         clear_clips()
         
@@ -131,6 +131,7 @@ class ClipboardWindow(Gtk.ApplicationWindow):
         self.refresh_clips()
 
     def refresh_clips(self):
+        """Reload clips from the database and rebuild the list UI."""
         from engine.storage import get_recent_clips
 
         # Clear current list - GTK4 way
@@ -162,7 +163,11 @@ class ClipboardWindow(Gtk.ApplicationWindow):
                     self.clip_list.append(card)
 
     def on_close_request(self, *args):
-        """Override close behavior to hide window instead of closing app."""
+        """Hide the window instead of destroying it on close.
+
+        Returns:
+            True to prevent the default close/destroy behaviour.
+        """
         self.hide()
         return True  # Prevents the default close behavior
 

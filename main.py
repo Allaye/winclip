@@ -1,11 +1,17 @@
-# clipboard_manager/main.py
+"""WinClip entry point.
+
+Usage:
+    python main.py --daemon   Start with GUI hidden (background mode).
+    python main.py --show     Start and present the window.
+    python main.py --gui      Alias for --show.
+"""
+
 import sys
 from app.app import start_app
 
 
-if __name__ == "__main__":
-    print("WinClip starting...")
-
+def main():
+    """Parse CLI arguments and launch the application."""
     mode = sys.argv[1] if len(sys.argv) > 1 else "--show"
 
     if mode == "--daemon":
@@ -16,4 +22,6 @@ if __name__ == "__main__":
         print("Usage: python main.py [--daemon|--show|--gui]")
         sys.exit(2)
 
-        
+
+if __name__ == "__main__":
+    main()

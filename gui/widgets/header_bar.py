@@ -1,11 +1,20 @@
-# gui/view/header_bar.py
+"""Inner content header bar with title and clear-all button."""
+
 import gi
 gi.require_version("Gtk", "4.0")
 
 from gi.repository import Gtk
 
+
 class HeaderBar(Gtk.Box):
+    """Horizontal bar showing the section title and a clear-all button."""
+
     def __init__(self, on_clear_all):
+        """Create the header bar.
+
+        Args:
+            on_clear_all: Callable invoked when the user clicks *Clear all*.
+        """
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
         self.set_margin_top(4)
         self.set_margin_bottom(4)
