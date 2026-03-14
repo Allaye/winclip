@@ -2,6 +2,8 @@
 
 WinClip is a GTK4 clipboard manager for Linux with persistent history, pinning, one-click paste, and a background session mode that can be summoned on demand.
 
+![WinClip screenshot](screenshot.png)
+
 ## Features
 
 - Clipboard history stored in SQLite
