@@ -47,11 +47,9 @@ def start_app(hide_gui=False):
         if app.win is None:
             app.win = ClipboardWindow(application=app)
 
-        should_present = not app.hide_gui
+        # Always present the window when activated after initial daemon startup
         app.hide_gui = False
-
-        if should_present:
-            app.win.present()
+        app.win.present()
 
     def on_startup(app):
         """Initialise app state, load CSS, and start the clipboard monitor."""

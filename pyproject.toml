@@ -4,9 +4,7 @@ version = "0.1.0"
 description = "A GTK4 clipboard manager daemon for Linux"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = [
-    "PyGObject",
-]
+dependencies = []
 
 [project.scripts]
 winclip = "main:main"
