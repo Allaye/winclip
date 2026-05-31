@@ -44,11 +44,13 @@ def start_app(hide_gui=False):
 
     def on_activate(app):
         """Create or present the main window."""
+        if app.hide_gui:
+            app.hide_gui = False
+            return
+
         if app.win is None:
             app.win = ClipboardWindow(application=app)
 
-        # Always present the window when activated after initial daemon startup
-        app.hide_gui = False
         app.win.present()
 
     def on_startup(app):

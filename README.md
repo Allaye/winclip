@@ -1,110 +1,64 @@
 # WinClip
 
-WinClip is a GTK4 clipboard manager for Linux with persistent history, pinning, one-click paste, and a background session mode that can be summoned on demand.
+WinClip is a native GTK4 clipboard manager for Linux. It runs as a lightweight background daemon, persisting your clipboard history, and provides a beautiful, fast UI that you can summon instantly via a keyboard shortcut. 
 
 ![WinClip screenshot](screenshot.png)
 
 ## Features
 
-- Clipboard history stored in SQLite
-- Pin and unpin important clips
-- One-click paste for saved entries
-- Background mode with hidden startup
-- Show-on-demand UI using `--show`
-- Login startup through a user `systemd` service
-
-## Requirements
-
-- Python 3.12+
-- GTK4 / PyGObject
-- `xclip`
-- `wl-copy` on Wayland
-- `ydotool` for simulated paste
+- **Persistent History:** Clipboard entries are safely stored in a local SQLite database.
+- **Pinning:** Pin important clips to keep them at the top of your list.
+- **Auto-Paste:** Click any clip to automatically paste it directly into your active window (powered by `ydotool` / `xdotool`).
+- **Wayland & X11:** Fully supports both display protocols natively.
+- **Background Daemon:** Starts automatically on login via `systemd` and waits silently until summoned.
 
 ## Installation
 
-```bash
-git clone https://github.com/Allaye/winclip.git
-cd winclip
-./setup_shortcut.sh
-```
+WinClip includes a bulletproof interactive installer that automatically downloads the code, installs the required system dependencies (`gtk4`, `xclip`, `wl-clipboard`, etc.), sets up the Python virtual environment, and configures the background daemon.
 
-The setup script:
-
-- installs Python dependencies with `uv sync` when available
-- falls back to `pip3 install -e .`
-- installs required system packages on Debian/Ubuntu systems
-- installs and enables the user `systemd` service
-
-Run the UI with:
+Just run this command in your terminal:
 
 ```bash
-python3 main.py --show
+curl -sL https://raw.githubusercontent.com/Allaye/winclip/master/setup_shortcut.sh | bash
 ```
 
-If you prefer a manual Python install:
+*Note: The script currently supports Debian/Ubuntu, Fedora, and Arch Linux.*
 
+## Setting Up Your Shortcut
+
+Once installed, WinClip runs invisibly in the background. To summon it, you need to map the "Show" command to a custom keyboard shortcut (like `Ctrl+Alt+C`).
+
+**1. GNOME / KDE:**
+- Go to **Settings → Keyboard → Custom Shortcuts**
+- Add a new shortcut:
+  - **Name:** Show WinClip
+  - **Command:** `python3 ~/.local/share/winclip/main.py --show`
+  - **Shortcut:** `Ctrl+Alt+C`
+
+**2. i3 / Sway:**
+Add this line to your config file:
+```text
+bindsym $mod+Shift+c exec python3 ~/.local/share/winclip/main.py --show
+```
+
+## Manual Usage
+
+If you prefer to run it manually from the terminal:
+
+**Start the daemon in the background:**
 ```bash
-pip install -e .
+python3 ~/.local/share/winclip/main.py --daemon
 ```
 
-Then run:
-
+**Summon the UI:**
 ```bash
-python3 main.py --show
+python3 ~/.local/share/winclip/main.py --show
 ```
 
-## Usage
-
-Show the UI:
-
-```bash
-python3 main.py --show
-```
-
-Start in background mode:
-
-```bash
-python3 main.py --daemon
-```
-
-After the window is closed, it hides and can be shown again with:
-
-```bash
-python3 main.py --show
-```
-
-## Autostart And Shortcut
-
-Install the user service:
-
-```bash
-./setup_shortcut.sh
-```
-
-This installs:
-
-- `winclip.service` into `~/.config/systemd/user`
-
-Recommended keyboard shortcut command:
-
-```bash
-python3 /path/to/winclip/main.py --show
-```
-
-Use the full absolute path for desktop shortcuts so the command works outside the repository directory.
-
-Check the background service:
-
+**Check daemon status:**
 ```bash
 systemctl --user status winclip.service
 ```
-
-## Notes
-
-- On Wayland, clipboard writing uses `wl-copy`.
-- Standard paste currently targets editor-style paste behavior.
-- Many terminals use `Ctrl+Shift+V` instead of `Ctrl+V`.
 
 ## License
 
