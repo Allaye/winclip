@@ -22,4 +22,4 @@ wheels/
 
 # db files
 *.db
-*.sqlite3
+*.sqlite3.python-version

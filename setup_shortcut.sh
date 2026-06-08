@@ -30,7 +30,7 @@ echo ""
 echo "Installing WinClip dependencies..."
 
 if command -v uv >/dev/null 2>&1; then
-    (cd "$WINCLIP_DIR" && uv sync)
+    (cd "$WINCLIP_DIR" && uv sync --python-preference system)
 elif command -v pip3 >/dev/null 2>&1; then
     (cd "$WINCLIP_DIR" && pip3 install -e .)
 fi
