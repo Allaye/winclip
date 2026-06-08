@@ -137,11 +137,23 @@ class ClipCard(Gtk.Box):
         session_type = os.environ.get("XDG_SESSION_TYPE", "x11")
 
         if session_type == "wayland" and shutil.which("ydotool"):
-            subprocess.Popen(
+            # Try the newer scancode syntax first (29=ctrl, 47=v), then fall
+            # back to the legacy human-readable form for older builds.
+            for cmd in (
+                ["ydotool", "key", "29:1", "47:1", "47:0", "29:0"],
                 ["ydotool", "key", "ctrl+v"],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-            )
+            ):
+                try:
+                    subprocess.run(
+                        cmd,
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                        check=True,
+                        timeout=2,
+                    )
+                    break
+                except Exception:
+                    continue
         elif shutil.which("xdotool"):
             subprocess.Popen(["xdotool", "key", "ctrl+v"])
         return False
@@ -162,12 +174,17 @@ class ClipCard(Gtk.Box):
         Args:
             _button: The clicked button widget (unused).
         """
+        window = self.get_root()
+        app = window.get_application() if isinstance(window, Gtk.Window) else None
+        monitor = getattr(app, "monitor", None) if app else None
+        if monitor is not None:
+            monitor.suppress_next(self.original_content)
+
         if not self._copy_to_system_clipboard():
             return
-        window = self.get_root()
         if isinstance(window, Gtk.Window):
             window.minimize()
-            GLib.timeout_add(800, self._simulate_paste)  # simulate paste after a short delay
+            GLib.timeout_add(800, self._simulate_paste)
         
 
     def on_pin_clicked(self, _button):
@@ -189,5 +206,3 @@ class ClipCard(Gtk.Box):
             from engine.model import Clip
             clip = Clip(id=self.clip_id, pinned=self.is_pinned)
             pin_unpin_clip(clip)
-
-

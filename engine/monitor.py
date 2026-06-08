@@ -40,3 +40,8 @@ class ClipboardMonitor:
 
     def stop(self):
         self._running = False
+
+    def suppress_next(self, text):
+        """Mark text as already-seen so a re-copy of it isn't stored again."""
+        if text:
+            self._last_clipboard = text.strip()
