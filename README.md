@@ -27,18 +27,19 @@ curl -sL https://raw.githubusercontent.com/Allaye/winclip/master/setup_shortcut.
 ## Setting Up Your Shortcut
 
 Once installed, WinClip runs invisibly in the background. To summon it, you need to map the "Show" command to a custom keyboard shortcut (like `Ctrl+Alt+C`).
+The installer creates stable launchers in `~/.local/bin`, so use that command for your shortcut.
 
 **1. GNOME / KDE:**
 - Go to **Settings → Keyboard → Custom Shortcuts**
 - Add a new shortcut:
   - **Name:** Show WinClip
-  - **Command:** `python3 ~/.local/share/winclip/main.py --show`
+  - **Command:** `~/.local/bin/winclip-show`
   - **Shortcut:** `Ctrl+Alt+C`
 
 **2. i3 / Sway:**
 Add this line to your config file:
 ```text
-bindsym $mod+Shift+c exec python3 ~/.local/share/winclip/main.py --show
+bindsym $mod+Shift+c exec ~/.local/bin/winclip-show
 ```
 
 ## Manual Usage
@@ -52,7 +53,7 @@ python3 ~/.local/share/winclip/main.py --daemon
 
 **Summon the UI:**
 ```bash
-python3 ~/.local/share/winclip/main.py --show
+~/.local/bin/winclip-show
 ```
 
 **Check daemon status:**

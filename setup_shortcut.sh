@@ -19,7 +19,10 @@ else
 fi
 
 WINCLIP_DIR="$INSTALL_DIR"
-SHOW_COMMAND="python3 $WINCLIP_DIR/main.py --show"
+BIN_DIR="$HOME/.local/bin"
+SHOW_LAUNCHER="$BIN_DIR/winclip-show"
+DAEMON_LAUNCHER="$BIN_DIR/winclip-daemon"
+SHOW_COMMAND="$SHOW_LAUNCHER"
 SERVICE_SOURCE="$WINCLIP_DIR/winclip.service"
 SYSTEMD_USER_DIR="$HOME/.config/systemd/user"
 
@@ -43,8 +46,45 @@ elif command -v pacman >/dev/null 2>&1; then
     sudo pacman -S --needed --noconfirm "${PACMAN_PACKAGES[@]}"
 fi
 
+mkdir -p "$BIN_DIR"
+
+cat > "$SHOW_LAUNCHER" <<EOF
+#!/bin/sh
+WINCLIP_DIR="$WINCLIP_DIR"
+VENV_PYTHON="\$WINCLIP_DIR/.venv/bin/python"
+
+if [ -x "\$VENV_PYTHON" ]; then
+    exec "\$VENV_PYTHON" "\$WINCLIP_DIR/main.py" --show
+fi
+
+exec python3 "\$WINCLIP_DIR/main.py" --show
+EOF
+
+cat > "$DAEMON_LAUNCHER" <<EOF
+#!/bin/sh
+WINCLIP_DIR="$WINCLIP_DIR"
+VENV_PYTHON="\$WINCLIP_DIR/.venv/bin/python"
+
+if [ -x "\$VENV_PYTHON" ]; then
+    exec "\$VENV_PYTHON" "\$WINCLIP_DIR/main.py" --daemon
+fi
+
+exec python3 "\$WINCLIP_DIR/main.py" --daemon
+EOF
+
+chmod +x "$SHOW_LAUNCHER" "$DAEMON_LAUNCHER"
+
 mkdir -p "$SYSTEMD_USER_DIR"
-sed "s|%WINCLIP_DIR%|$WINCLIP_DIR|g" "$SERVICE_SOURCE" > "$SYSTEMD_USER_DIR/winclip.service"
+sed \
+    -e "s|%WINCLIP_DIR%|$WINCLIP_DIR|g" \
+    -e "s|%WINCLIP_DAEMON_CMD%|$DAEMON_LAUNCHER|g" \
+    "$SERVICE_SOURCE" > "$SYSTEMD_USER_DIR/winclip.service"
+
+systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_RUNTIME_DIR DBUS_SESSION_BUS_ADDRESS XAUTHORITY || true
+if command -v dbus-update-activation-environment >/dev/null 2>&1; then
+    dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_RUNTIME_DIR DBUS_SESSION_BUS_ADDRESS XAUTHORITY || true
+fi
+
 systemctl --user daemon-reload
 systemctl --user enable winclip.service
 systemctl --user restart winclip.service

@@ -6,9 +6,9 @@ PartOf=graphical-session.target
 [Service]
 Type=simple
 WorkingDirectory=%WINCLIP_DIR%
-ExecStart=/usr/bin/python3 %WINCLIP_DIR%/main.py --daemon
+ExecStart=%WINCLIP_DAEMON_CMD%
 Restart=on-failure
 RestartSec=2
 
 [Install]
-WantedBy=default.target
+WantedBy=graphical-session.target
