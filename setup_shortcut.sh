@@ -60,7 +60,7 @@ if [ -x "\$VENV_PYTHON" ] && "\$VENV_PYTHON" -c 'import gi' >/dev/null 2>&1; the
     exec "\$VENV_PYTHON" "\$WINCLIP_DIR/main.py" --show
 fi
 
-exec python3 "\$WINCLIP_DIR/main.py" --show
+exec /usr/bin/python3 "\$WINCLIP_DIR/main.py" --show
 EOF
 
 cat > "$DAEMON_LAUNCHER" <<EOF
@@ -74,7 +74,7 @@ if [ -x "\$VENV_PYTHON" ] && "\$VENV_PYTHON" -c 'import gi' >/dev/null 2>&1; the
     exec "\$VENV_PYTHON" "\$WINCLIP_DIR/main.py" --daemon
 fi
 
-exec python3 "\$WINCLIP_DIR/main.py" --daemon
+exec /usr/bin/python3 "\$WINCLIP_DIR/main.py" --daemon
 EOF
 
 chmod +x "$SHOW_LAUNCHER" "$DAEMON_LAUNCHER"
