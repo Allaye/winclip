@@ -56,7 +56,7 @@ VENV_PYTHON="\$WINCLIP_DIR/.venv/bin/python"
 
 cd "\$WINCLIP_DIR" || exit 1
 
-if [ -x "\$VENV_PYTHON" ]; then
+if [ -x "\$VENV_PYTHON" ] && "\$VENV_PYTHON" -c 'import gi' >/dev/null 2>&1; then
     exec "\$VENV_PYTHON" "\$WINCLIP_DIR/main.py" --show
 fi
 
@@ -70,7 +70,7 @@ VENV_PYTHON="\$WINCLIP_DIR/.venv/bin/python"
 
 cd "\$WINCLIP_DIR" || exit 1
 
-if [ -x "\$VENV_PYTHON" ]; then
+if [ -x "\$VENV_PYTHON" ] && "\$VENV_PYTHON" -c 'import gi' >/dev/null 2>&1; then
     exec "\$VENV_PYTHON" "\$WINCLIP_DIR/main.py" --daemon
 fi
 
