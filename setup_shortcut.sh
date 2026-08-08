@@ -23,6 +23,7 @@ BIN_DIR="$HOME/.local/bin"
 SHOW_LAUNCHER="$BIN_DIR/winclip-show"
 DAEMON_LAUNCHER="$BIN_DIR/winclip-daemon"
 SHOW_COMMAND="$SHOW_LAUNCHER"
+DEFAULT_SHORTCUT="Ctrl+Space"
 SERVICE_SOURCE="$WINCLIP_DIR/winclip.service"
 SYSTEMD_USER_DIR="$HOME/.config/systemd/user"
 
@@ -53,6 +54,8 @@ cat > "$SHOW_LAUNCHER" <<EOF
 WINCLIP_DIR="$WINCLIP_DIR"
 VENV_PYTHON="\$WINCLIP_DIR/.venv/bin/python"
 
+cd "\$WINCLIP_DIR" || exit 1
+
 if [ -x "\$VENV_PYTHON" ]; then
     exec "\$VENV_PYTHON" "\$WINCLIP_DIR/main.py" --show
 fi
@@ -64,6 +67,8 @@ cat > "$DAEMON_LAUNCHER" <<EOF
 #!/bin/sh
 WINCLIP_DIR="$WINCLIP_DIR"
 VENV_PYTHON="\$WINCLIP_DIR/.venv/bin/python"
+
+cd "\$WINCLIP_DIR" || exit 1
 
 if [ -x "\$VENV_PYTHON" ]; then
     exec "\$VENV_PYTHON" "\$WINCLIP_DIR/main.py" --daemon
@@ -91,6 +96,31 @@ systemctl --user restart winclip.service
 
 echo ""
 echo "=== KEYBOARD SHORTCUT SETUP ==="
+echo -n "Choose a shortcut for WinClip [Default: $DEFAULT_SHORTCUT]: "
+read -r shortcut_key < /dev/tty || true
+SHORTCUT_KEY=${shortcut_key:-$DEFAULT_SHORTCUT}
+
 echo "Create a custom shortcut in your system settings:"
 echo "Command: $SHOW_COMMAND"
-echo "Shortcut: Ctrl+Alt+C"
+echo "Shortcut: $SHORTCUT_KEY"
+
+if [ "$SHORTCUT_KEY" = "$DEFAULT_SHORTCUT" ]; then
+    echo "Warning: Ubuntu/GNOME commonly uses Ctrl+Space to switch input sources."
+    echo "Disable that input-source shortcut or choose another key if WinClip does not open."
+fi
+
+DESKTOP="${XDG_CURRENT_DESKTOP:-${XDG_SESSION_DESKTOP:-unknown}}"
+case "$DESKTOP" in
+    *GNOME*|*Unity*)
+        echo "GNOME: Settings -> Keyboard -> View and Customize Shortcuts -> Custom Shortcuts"
+        ;;
+    *KDE*)
+        echo "KDE: System Settings -> Keyboard -> Shortcuts -> Custom Shortcuts"
+        ;;
+    *sway*|*Sway*|*i3*|*I3*)
+        echo "For i3/Sway, bind the command in your window manager configuration."
+        ;;
+    *)
+        echo "Open your desktop environment's keyboard shortcut settings."
+        ;;
+esac

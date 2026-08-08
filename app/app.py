@@ -46,7 +46,6 @@ def start_app(hide_gui=False):
         """Create or present the main window."""
         if app.hide_gui:
             app.hide_gui = False
-            return
 
         if app.win is None:
             app.win = ClipboardWindow(application=app)
