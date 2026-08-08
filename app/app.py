@@ -44,6 +44,11 @@ def start_app(hide_gui=False):
 
     def on_activate(app):
         """Create or present the main window."""
+        if app.initial_activation:
+            app.initial_activation = False
+            if app.hide_gui:
+                return
+
         if app.hide_gui:
             app.hide_gui = False
 
@@ -57,6 +62,7 @@ def start_app(hide_gui=False):
         app.win = None
         app.monitor = None
         app.hide_gui = hide_gui
+        app.initial_activation = True
         style.load_css(app)
 
         # Keep the main loop alive even when no window is visible (daemon mode).
